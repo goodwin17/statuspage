@@ -13,7 +13,8 @@ class Service(db.Model):
     name = db.Column(db.Text, unique=True, nullable=False)
     url = db.Column(db.Text, unique=True, nullable=False)
     check_mode = db.Column(db.Text, nullable=False)
-    check_frequency_ms = db.Column(db.Integer, nullable=False)
+    check_frequency = db.Column(db.Integer, nullable=False)
+    monitoring_status = db.Column(db.Integer, nullable=False)
     checks = db.relationship('Check', backref='service')
     incidents = db.relationship('Incident', backref='service')
 

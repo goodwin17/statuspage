@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from models import *
 
@@ -16,9 +16,28 @@ def index():
 def api():
     return "Api here"
 
-@app.route("/api/services") # get all services
+@app.route("/api/services", methods=["GET", "POST"]) # get all services
 def api_services():
-    return "Services here"
+    if request.method == "GET":
+        services = db.session.query(Service).all()
+        return jsonify(services)
+    
+    data = request.get_json()
+    service = Service(
+        name=data["name"],
+        url=data["url"],
+        check_mode=data["check-mode"],
+        check_frequency=data["check-frequency"],
+        monitoring_status=data["monitoring-status"]
+    )
+
+    try:
+        db.session.add(service)
+    except:
+        return jsonify({"msg": "service already exist"}), 500
+    
+    db.session.commit()
+    return jsonify({"msg": "service added"}), 200
 
 @app.route("/api/services/<id>") # get specific service
 def api_services_id(id):
