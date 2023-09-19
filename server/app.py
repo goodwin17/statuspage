@@ -16,9 +16,11 @@ jwt = JWTManager(app)
 def index():
     return "Test"
 
+
 @app.route("/api")
 def api():
     return "Api here"
+
 
 @app.route("/api/services", methods=["GET", "POST"]) # get all services
 def api_services():
@@ -43,9 +45,11 @@ def api_services():
     db.session.commit()
     return jsonify({"message": "service added"}), 200
 
+
 @app.route("/api/services/<id>") # get specific service
 def api_services_id(id):
     return f"Specific service (id = {id}) here"
+
 
 @app.route("/api/incidents", methods=["GET"]) # 'service' parameter is necessary
 def api_incidents_service_id():
@@ -57,9 +61,11 @@ def api_incidents_service_id():
     incidents = db.session.query(Incident).filter_by(service_id=service_id).all()
     return jsonify([serialize(incident) for incident in incidents])
 
+
 @app.route("/api/checks") # 'service' parameter is necessary
 def api_checks_service_id():
     return "Checks here"
+
 
 @app.route("/api/login", methods=["POST"])
 def api_login():
@@ -78,6 +84,7 @@ def api_login():
     token = create_access_token(login) # todo
 
     return jsonify({ "token": token })
+
 
 if __name__ == "__main__":
     app.run(debug=True)
