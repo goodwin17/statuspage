@@ -24,7 +24,7 @@ def api():
 def api_services():
     if request.method == "GET":
         services = db.session.query(Service).all()
-        return jsonify(services)
+        return jsonify([serialize(service) for service in services])
     
     data = request.get_json()
     service = Service(
@@ -38,10 +38,10 @@ def api_services():
     try:
         db.session.add(service)
     except:
-        return jsonify({"msg": "service already exist"}), 500
+        return jsonify({"message": "service already exist"}), 500
     
     db.session.commit()
-    return jsonify({"msg": "service added"}), 200
+    return jsonify({"message": "service added"}), 200
 
 @app.route("/api/services/<id>") # get specific service
 def api_services_id(id):
