@@ -1,6 +1,7 @@
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from models import *
+from utils import serialize
 from flask_jwt_extended import JWTManager, create_access_token
 from werkzeug.security import generate_password_hash, check_password_hash
 
@@ -46,9 +47,15 @@ def api_services():
 def api_services_id(id):
     return f"Specific service (id = {id}) here"
 
-@app.route("/api/incidents") # 'service' parameter is necessary
+@app.route("/api/incidents", methods=["GET"]) # 'service' parameter is necessary
 def api_incidents_service_id():
-    return "Incidents here"
+    service_id = request.args.get("service_id")
+
+    if service_id is None:
+        return jsonify({"message": "no service_id url argument"}), 400
+    
+    incidents = db.session.query(Incident).filter_by(service_id=service_id).all()
+    return jsonify([serialize(incident) for incident in incidents])
 
 @app.route("/api/checks") # 'service' parameter is necessary
 def api_checks_service_id():
