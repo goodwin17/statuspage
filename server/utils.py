@@ -27,3 +27,6 @@ def check_service_icmp(host):
         result['status'] = 'no response'
     
     return result
+
+def serialize(obj):
+    return {c.name: getattr(obj, c.name) for c in obj.__table__.columns}
