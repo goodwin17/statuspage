@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, make_response
 from flask_sqlalchemy import SQLAlchemy
 from models import *
 from utils import serialize
@@ -11,6 +11,7 @@ app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///app.db"
 
 db = SQLAlchemy(app)
 jwt = JWTManager(app)
+
 
 @app.route("/")
 def index():
@@ -83,7 +84,10 @@ def api_login():
     
     token = create_access_token(login) # todo
 
-    return jsonify({ "token": token })
+    response = make_response({ "message": "successfully logged in" }, status=200)
+    response.headers['Authorization'] = f'Bearer {token}'
+
+    return response
 
 
 if __name__ == "__main__":
