@@ -78,9 +78,7 @@ def api_login():
     if user is None:
         return jsonify({ "message": "no such user" }), 401
 
-    password_hash = generate_password_hash(password + user.password_salt)
-
-    if password_hash != user.password_hash:
+    if check_password_hash(user.password_hash, password):
         return jsonify({ "message": "wrong password" }), 401
     
     token = create_access_token(login) # todo
