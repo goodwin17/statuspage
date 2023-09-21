@@ -2,12 +2,14 @@ from flask import Flask, request, jsonify, make_response
 from flask_sqlalchemy import SQLAlchemy
 from models import *
 from utils import serialize
-from flask_jwt_extended import JWTManager, create_access_token
+from flask_jwt_extended import JWTManager, create_access_token, unset_jwt_cookies
 from werkzeug.security import generate_password_hash, check_password_hash
+from secrets import token_hex
 
 app = Flask(__name__)
 
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///app.db"
+app.config["JWT_SECRET_KEY"] = "secret"
 
 db = SQLAlchemy(app)
 jwt = JWTManager(app)
@@ -41,7 +43,7 @@ def api_services():
     try:
         db.session.add(service)
     except:
-        return jsonify({"message": "service already exist"}), 500
+        return jsonify({"message": "service already exist"}), 409
     
     db.session.commit()
     return jsonify({"message": "service added"}), 200
@@ -88,6 +90,27 @@ def api_login():
     response.headers['Authorization'] = f'Bearer {token}'
 
     return response
+
+
+@app.route("/api/register", methods=["POST"])
+def api_register():
+    data = request.form.to_dict()
+
+    if db.session.query(User).filter_by(login=data["login"]).one_or_none():
+        return jsonify(message="user already exists"), 409
+
+    new_user = User(
+        name=data["name"],
+        login=data["login"],
+        password_hash=generate_password_hash(data["password"], salt_length=32),
+        password_salt="",
+        role=data["role"]
+    )
+    
+    db.session.add(new_user)
+    db.session.commit()
+
+    return jsonify(message="user added"), 200
 
 
 if __name__ == "__main__":
