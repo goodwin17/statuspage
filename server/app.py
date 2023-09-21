@@ -82,8 +82,8 @@ def api_login():
     
     token = create_access_token(login) # todo
 
-    response = make_response({ "message": "successfully logged in" }, status=200)
-    response.headers['Authorization'] = f'Bearer {token}'
+    response = make_response({ "message": "successfully logged in" })
+    response.set_cookie("jwt_token", token, httponly=True)
 
     return response
 
