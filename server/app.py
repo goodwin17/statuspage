@@ -2,7 +2,7 @@ from flask import Flask, request, jsonify, make_response
 from flask_sqlalchemy import SQLAlchemy
 from models import *
 from utils import serialize
-from flask_jwt_extended import JWTManager, create_access_token, unset_jwt_cookies
+from flask_jwt_extended import JWTManager, create_access_token, unset_jwt_cookies, jwt_required
 from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__)
@@ -21,6 +21,10 @@ def index():
 @app.route("/api")
 def api():
     return "Api here"
+
+@app.route("/api/protected")
+def api_protected():
+    return "Protected here"
 
 
 @app.route("/api/services", methods=["GET", "POST"]) # get all services
