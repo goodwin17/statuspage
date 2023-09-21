@@ -5,7 +5,6 @@ class User(db.Model):
     name = db.Column(db.Text, nullable=False)
     login = db.Column(db.Text, unique=True, nullable=False)
     password_hash = db.Column(db.Text, nullable=False)
-    password_salt = db.Column(db.Text, nullable=False)
     role = db.Column(db.Text, nullable=False)
 
 class Service(db.Model):

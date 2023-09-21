@@ -4,7 +4,6 @@ from models import *
 from utils import serialize
 from flask_jwt_extended import JWTManager, create_access_token, unset_jwt_cookies
 from werkzeug.security import generate_password_hash, check_password_hash
-from secrets import token_hex
 
 app = Flask(__name__)
 
@@ -102,8 +101,7 @@ def api_register():
     new_user = User(
         name=data["name"],
         login=data["login"],
-        password_hash=generate_password_hash(data["password"], salt_length=32),
-        password_salt="",
+        password_hash=generate_password_hash(data["password"], salt_length=64),
         role=data["role"]
     )
     
