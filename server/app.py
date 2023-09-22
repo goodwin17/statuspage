@@ -2,7 +2,7 @@ from flask import Flask, request, jsonify, make_response
 from flask_sqlalchemy import SQLAlchemy
 from models import *
 from utils import serialize
-from flask_jwt_extended import JWTManager, create_access_token, unset_jwt_cookies, jwt_required
+from flask_jwt_extended import JWTManager, create_access_token, unset_jwt_cookies, jwt_required, set_access_cookies
 from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__)
@@ -88,7 +88,7 @@ def api_login():
     token = create_access_token(login) # todo
 
     response = make_response({ "message": "successfully logged in" })
-    response.set_cookie("jwt_token", token, httponly=True)
+    set_access_cookies(response, token)
 
     return response
 
