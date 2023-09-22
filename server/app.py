@@ -93,6 +93,13 @@ def api_login():
     return response
 
 
+@app.route("/api/logout", methods=["POST"])
+def api_logout():
+    response = jsonify({"message": "successfully logged out"})
+    unset_jwt_cookies(response)
+    return response
+
+
 @app.route("/api/register", methods=["POST"])
 def api_register():
     data = request.form.to_dict()
