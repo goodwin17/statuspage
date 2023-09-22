@@ -46,10 +46,10 @@ def api_services():
     try:
         db.session.add(service)
     except:
-        return jsonify({"message": "service already exist"}), 409
+        return jsonify({"msg": "service already exist"}), 409
     
     db.session.commit()
-    return jsonify({"message": "service added"}), 200
+    return jsonify({"msg": "service added"}), 200
 
 
 @app.route("/api/services/<id>") # get specific service
@@ -62,7 +62,7 @@ def api_incidents_service_id():
     service_id = request.args.get("service_id")
 
     if service_id is None:
-        return jsonify({"message": "no service_id url argument"}), 400
+        return jsonify({"msg": "no service_id url argument"}), 400
     
     incidents = db.session.query(Incident).filter_by(service_id=service_id).all()
     return jsonify([serialize(incident) for incident in incidents])
@@ -80,14 +80,14 @@ def api_login():
     user = db.session.query(User).filter_by(login=login).one_or_none()
 
     if user is None:
-        return jsonify({ "message": "no such user" }), 401
+        return jsonify({ "msg": "no such user" }), 401
 
     if not check_password_hash(user.password_hash, password):
-        return jsonify({ "message": "wrong password" }), 401
+        return jsonify({ "msg": "wrong password" }), 401
     
     token = create_access_token(login) # todo
 
-    response = make_response({ "message": "successfully logged in" })
+    response = make_response({ "msg": "successfully logged in" })
     set_access_cookies(response, token)
 
     return response
@@ -95,7 +95,7 @@ def api_login():
 
 @app.route("/api/logout", methods=["POST"])
 def api_logout():
-    response = jsonify({"message": "successfully logged out"})
+    response = jsonify({"msg": "successfully logged out"})
     unset_jwt_cookies(response)
     return response
 
@@ -105,7 +105,7 @@ def api_register():
     data = request.form.to_dict()
 
     if db.session.query(User).filter_by(login=data["login"]).one_or_none():
-        return jsonify(message="user already exists"), 409
+        return jsonify({ "msg": "user already exists" }), 409
 
     new_user = User(
         name=data["name"],
@@ -117,7 +117,7 @@ def api_register():
     db.session.add(new_user)
     db.session.commit()
 
-    return jsonify(message="user added"), 200
+    return jsonify({ "msg": "user added" }), 200
 
 
 if __name__ == "__main__":
