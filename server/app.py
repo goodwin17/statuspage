@@ -47,10 +47,10 @@ def api_services():
     try:
         db.session.add(service)
     except:
-        return jsonify({"msg": "service already exist"}), 409
+        return jsonify({ "msg": "service already exist" }), 409
     
     db.session.commit()
-    return jsonify({"msg": "service added"})
+    return jsonify({ "msg": "service added" })
 
 
 @app.route("/api/services/<id>", methods=["GET", "PUT", "DELETE"])
@@ -60,7 +60,7 @@ def api_services_id(id):
     service = service_query.one_or_none()
     
     if service is None:
-        return jsonify({ "msg": "no service with such id"}), 400
+        return jsonify({ "msg": "no service with such id" }), 400
         
     if request.method == "GET":
         return jsonify(serialize(service))
@@ -82,7 +82,7 @@ def api_services_id(id):
         return jsonify({ "msg": "can not delete service" })
     
     db.session.commit()
-    return jsonify({ "msg": "service deleted"})
+    return jsonify({ "msg": "service deleted" })
 
 
 @app.route("/api/incidents", methods=["GET"]) # 'service' parameter is necessary
@@ -90,7 +90,7 @@ def api_incidents_service_id():
     service_id = request.args.get("service_id")
 
     if service_id is None:
-        return jsonify({"msg": "no service_id url argument"}), 400
+        return jsonify({ "msg": "no service_id url argument" }), 400
     
     incidents = db.session.query(Incident).filter_by(service_id=service_id).all()
     return jsonify([serialize(incident) for incident in incidents])
@@ -112,7 +112,7 @@ def api_login():
     if not check_password_hash(user.password_hash, data["password"]):
         return jsonify({ "msg": "wrong password" }), 401
     
-    token = create_access_token(data["login"]) # todo
+    token = create_access_token(user.login) # todo
 
     response = make_response({ "msg": "successfully logged in" })
     set_access_cookies(response, token)
@@ -122,7 +122,7 @@ def api_login():
 
 @app.route("/api/logout", methods=["POST"])
 def api_logout():
-    response = jsonify({"msg": "successfully logged out"})
+    response = jsonify({ "msg": "successfully logged out" })
     unset_jwt_cookies(response)
     return response
 
