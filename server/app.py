@@ -49,12 +49,17 @@ def api_services():
         return jsonify({"msg": "service already exist"}), 409
     
     db.session.commit()
-    return jsonify({"msg": "service added"}), 200
+    return jsonify({"msg": "service added"})
 
 
 @app.route("/api/services/<id>") # get specific service
 def api_services_id(id):
-    return f"Specific service (id = {id}) here"
+    service = db.session.query(Service).filter_by(id=id).one_or_none()
+
+    if service is None:
+        return jsonify({ "msg": "no service with such id"}), 400
+    
+    return jsonify(serialize(service))
 
 
 @app.route("/api/incidents", methods=["GET"]) # 'service' parameter is necessary
@@ -117,7 +122,7 @@ def api_register():
     db.session.add(new_user)
     db.session.commit()
 
-    return jsonify({ "msg": "user added" }), 200
+    return jsonify({ "msg": "user added" })
 
 
 if __name__ == "__main__":
