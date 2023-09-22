@@ -102,7 +102,8 @@ def api_logout():
 
 @app.route("/api/register", methods=["POST"])
 def api_register():
-    data = request.form.to_dict()
+    data = request.get_json()
+    print(type(data))
 
     if db.session.query(User).filter_by(login=data["login"]).one_or_none():
         return jsonify({ "msg": "user already exists" }), 409
