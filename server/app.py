@@ -23,6 +23,7 @@ def api():
     return "Api here"
 
 @app.route("/api/protected")
+@jwt_required()
 def api_protected():
     return "Protected here"
 
