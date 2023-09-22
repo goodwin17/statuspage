@@ -75,17 +75,16 @@ def api_checks_service_id():
 
 @app.route("/api/login", methods=["POST"])
 def api_login():
-    login = request.json.get("login")
-    password = request.json.get("password")
-    user = db.session.query(User).filter_by(login=login).one_or_none()
+    data = request.get_json()
+    user = db.session.query(User).filter_by(login=data["login"]).one_or_none()
 
     if user is None:
         return jsonify({ "msg": "no such user" }), 401
 
-    if not check_password_hash(user.password_hash, password):
+    if not check_password_hash(user.password_hash, data["password"]):
         return jsonify({ "msg": "wrong password" }), 401
     
-    token = create_access_token(login) # todo
+    token = create_access_token(data["login"]) # todo
 
     response = make_response({ "msg": "successfully logged in" })
     set_access_cookies(response, token)
