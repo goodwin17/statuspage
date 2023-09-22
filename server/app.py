@@ -1,8 +1,8 @@
 from flask import Flask, request, jsonify, make_response
 from flask_sqlalchemy import SQLAlchemy
 from models import *
-from utils import serialize
-from flask_jwt_extended import JWTManager, create_access_token, unset_jwt_cookies, jwt_required, set_access_cookies
+from utils import serialize, check_jwt
+from flask_jwt_extended import JWTManager, create_access_token, unset_jwt_cookies, jwt_required, set_access_cookies, verify_jwt_in_request
 from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__)
@@ -34,6 +34,7 @@ def api_services():
         services = db.session.query(Service).all()
         return jsonify([serialize(service) for service in services])
     
+    verify_jwt_in_request()
     data = request.get_json()
     service = Service(
         name=data["name"],
@@ -52,14 +53,36 @@ def api_services():
     return jsonify({"msg": "service added"})
 
 
-@app.route("/api/services/<id>") # get specific service
+@app.route("/api/services/<id>", methods=["GET", "PUT", "DELETE"])
 def api_services_id(id):
-    service = db.session.query(Service).filter_by(id=id).one_or_none()
-
+    data = request.get_json()
+    service_query = db.session.query(Service).filter_by(id=id)
+    service = service_query.one_or_none()
+    
     if service is None:
         return jsonify({ "msg": "no service with such id"}), 400
+        
+    if request.method == "GET":
+        return jsonify(serialize(service))
     
-    return jsonify(serialize(service))
+    verify_jwt_in_request()
+    
+    if request.method == "PUT":
+        try:
+            service_query.update(data)
+        except:
+            return jsonify({ "msg": "can not update service" })
+        
+        db.session.commit()
+        return jsonify({ "msg": "service updated" })
+    
+    try:
+        service_query.delete()
+    except:
+        return jsonify({ "msg": "can not delete service" })
+    
+    db.session.commit()
+    return jsonify({ "msg": "service deleted"})
 
 
 @app.route("/api/incidents", methods=["GET"]) # 'service' parameter is necessary
