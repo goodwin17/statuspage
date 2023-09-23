@@ -1,8 +1,10 @@
 from flask import Flask, request, jsonify, make_response
 from flask_sqlalchemy import SQLAlchemy
 from models import *
-from utils import serialize, check_jwt
-from flask_jwt_extended import JWTManager, create_access_token, unset_jwt_cookies, jwt_required, set_access_cookies, verify_jwt_in_request
+from utils import serialize
+from flask_jwt_extended import JWTManager, create_access_token, unset_jwt_cookies,\
+    jwt_required, set_access_cookies, verify_jwt_in_request,\
+    get_jwt_identity, create_refresh_token, set_refresh_cookies
 from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__)
@@ -112,11 +114,11 @@ def api_login():
     if not check_password_hash(user.password_hash, data["password"]):
         return jsonify({ "msg": "wrong password" }), 401
     
-    token = create_access_token(user.login) # todo
-
+    access_token = create_access_token(user.login) # todo
+    refresh_token = create_refresh_token(user.login)
     response = make_response({ "msg": "successfully logged in" })
-    set_access_cookies(response, token)
-
+    set_access_cookies(response, access_token)
+    set_refresh_cookies(response, refresh_token)
     return response
 
 
@@ -130,7 +132,6 @@ def api_logout():
 @app.route("/api/register", methods=["POST"])
 def api_register():
     data = request.get_json()
-    print(type(data))
 
     if db.session.query(User).filter_by(login=data["login"]).one_or_none():
         return jsonify({ "msg": "user already exists" }), 409
@@ -146,6 +147,16 @@ def api_register():
     db.session.commit()
 
     return jsonify({ "msg": "user added" })
+
+
+@app.route("/api/refresh", methods=["POST"])
+@jwt_required(refresh=True)
+def api_refresh():
+    identity = get_jwt_identity()
+    access_token = create_access_token(identity)
+    response = make_response({ "msg": "successfully logged in" })
+    set_access_cookies(response, access_token)
+    return response
 
 
 if __name__ == "__main__":
