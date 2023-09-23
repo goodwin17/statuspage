@@ -85,9 +85,9 @@ def api_services_id(id):
     return jsonify({ "msg": "service deleted" })
 
 
-@app.route("/api/incidents", methods=["GET"]) # 'service' parameter is necessary
+@app.route("/api/incidents", methods=["GET"]) # 'service-id' parameter is necessary
 def api_incidents_service_id():
-    service_id = request.args.get("service_id")
+    service_id = request.args.get("service-id")
 
     if service_id is None:
         return jsonify({ "msg": "no service_id url argument" }), 400
