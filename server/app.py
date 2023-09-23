@@ -90,7 +90,7 @@ def api_incidents_service_id():
     service_id = request.args.get("service-id")
 
     if service_id is None:
-        return jsonify({ "msg": "no service_id url argument" }), 400
+        return jsonify({ "msg": "no service-id url argument" }), 400
     
     incidents = db.session.query(Incident).filter_by(service_id=service_id).all()
     return jsonify([serialize(incident) for incident in incidents])
