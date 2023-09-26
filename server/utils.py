@@ -13,18 +13,17 @@ def check_service_http(url):
     return result
 
 def check_service_icmp(host):
-    param = '-n' if platform.system().lower()=='windows' else '-c'
+    sys_name = platform.system().lower()
+    param = '-n' if sys_name == 'windows' else '-c'
     command = ['ping', param, '1', host]
     result = {}
 
     try:
-        start_time = time()
-        subprocess.call(command, stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
-        end_time = time()
-        result['response_time'] = (end_time - start_time) * 1000
+        response = subprocess.check_output(command).decode('cp866')
+        result['elapsed'] = response.split('Среднее = ')[1].split(' мсек')[0]
         result['status'] = 'ok'
     except:
-        result['status'] = 'no response'
+        result['status'] = 'error'
     
     return result
 
