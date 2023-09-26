@@ -3,6 +3,7 @@ import platform
 import subprocess
 from time import time
 
+
 def check_service_http(url):
     response = requests.get(url)
     result = {
@@ -11,6 +12,7 @@ def check_service_http(url):
     }
     
     return result
+
 
 def check_service_icmp(host):
     sys_name = platform.system().lower()
@@ -26,6 +28,7 @@ def check_service_icmp(host):
         result['status'] = 'error'
     
     return result
+
 
 def serialize(obj):
     return {c.name: getattr(obj, c.name) for c in obj.__table__.columns}
