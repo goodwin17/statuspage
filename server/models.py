@@ -10,7 +10,7 @@ class User(db.Model):
 class Service(db.Model):
     id = db.Column(db.Integer, primary_key=True, unique=True, autoincrement=True)
     name = db.Column(db.Text, unique=True, nullable=False)
-    url = db.Column(db.Text, unique=True, nullable=False)
+    address = db.Column(db.Text, unique=True, nullable=False)
     check_method = db.Column(db.Text, nullable=False)
     check_interval = db.Column(db.Integer, nullable=False)
     monitoring_status = db.Column(db.Integer, nullable=False)

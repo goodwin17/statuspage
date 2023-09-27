@@ -40,7 +40,7 @@ def api_services():
     data = request.get_json()
     service = Service(
         name=data["name"],
-        url=data["url"],
+        address=data["address"],
         check_method=data["check-method"],
         check_interval=data["check-interval"],
         monitoring_status=data["monitoring-status"]
