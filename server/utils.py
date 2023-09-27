@@ -5,28 +5,42 @@ from time import time
 import threading
 
 
-def check_service_http(url):
-    response = requests.get(url)
-    result = {
-        'status_code': response.status_code,
-        'response_time': response.elapsed
-    }
+def check_service_http(address):
+    if not address.startswith('http'):
+        address = f'https://{address}'
+
+    try:
+        response = requests.get(address)
+        result = {
+            'status': response.status_code,
+            'response_time': response.elapsed
+        }
+    except:
+        result = {
+            'status': 'error'
+        }
     
     return result
 
 
-def check_service_icmp(host):
+def check_service_icmp(address):
+    if address.startswith('http'):
+        address = address.split('//')[1]
+    
     sys_name = platform.system().lower()
     param = '-n' if sys_name == 'windows' else '-c'
-    command = ['ping', param, '1', host]
-    result = {}
+    command = ['ping', param, '1', address]
 
     try:
         response = subprocess.check_output(command).decode('cp866')
-        result['elapsed'] = response.split('Среднее = ')[1].split(' мсек')[0]
-        result['status'] = 'ok'
+        result = {
+            'status': 'ok',
+            'response_time': response.split('Среднее = ')[1].split(' мсек')[0]
+        }
     except:
-        result['status'] = 'error'
+        result = {
+            'status': 'error'
+        }
     
     return result
 
