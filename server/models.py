@@ -21,7 +21,7 @@ class Check(db.Model):
     id = db.Column(db.Integer, primary_key=True, unique=True, autoincrement=True)
     service_id = db.Column(db.Integer, db.ForeignKey('service.id'), nullable=False)
     datetime = db.Column(db.Text, nullable=False)
-    response = db.Column(db.Text) # JSON with status_code and time
+    result = db.Column(db.Text) # JSON with status and response_time
 
 class Incident(db.Model):
     id = db.Column(db.Integer, primary_key=True, unique=True, autoincrement=True)
