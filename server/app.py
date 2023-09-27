@@ -41,8 +41,8 @@ def api_services():
     service = Service(
         name=data["name"],
         url=data["url"],
-        check_mode=data["check-mode"],
-        check_frequency=data["check-frequency"],
+        check_method=data["check-method"],
+        check_interval=data["check-interval"],
         monitoring_status=data["monitoring-status"]
     )
 
