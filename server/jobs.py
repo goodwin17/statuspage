@@ -7,7 +7,6 @@ def check_service(service):
     method = None
     result = None
     current_time = str(datetime.now())
-    print('sent')
 
     if service['check_method'] == 'http':
         method = check_service_http
@@ -30,4 +29,3 @@ def check_service(service):
         )
         db.session.add(check)
         db.session.commit()
-        print('succeed')

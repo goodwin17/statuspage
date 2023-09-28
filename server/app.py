@@ -16,11 +16,8 @@ from monitoring import Monitoring
 from utils import serialize, serialize_all
 
 with app.app_context():
-    # db.create_all() # create tables if some tables don't exist
     services = serialize_all(db.session.query(Service).all())
     monitoring = Monitoring(APScheduler(), services)
-    
-    # if len(services) > 0:
     monitoring.setup()
 
 jwt = JWTManager(app)
@@ -34,6 +31,7 @@ def index():
 @app.route("/api")
 def api():
     return "Api here"
+
 
 @app.route("/api/protected")
 @jwt_required()
@@ -157,7 +155,6 @@ def api_register():
     
     db.session.add(new_user)
     db.session.commit()
-
     return jsonify({ "msg": "user added" })
 
 

@@ -23,7 +23,6 @@ class Monitoring:
                 trigger='interval',
                 seconds=service['check_interval']
             )
-            print('added')
 
 
     def start(self, service_id):
