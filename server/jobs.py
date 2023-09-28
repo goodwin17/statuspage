@@ -1,12 +1,13 @@
 from utils import check_service_http, check_service_icmp
-from models import Check
-from app import db
 from datetime import datetime
+import json
 
 
 def check_service(service):
     method = None
-    current_time = datetime.now()
+    result = None
+    current_time = str(datetime.now())
+    print('sent')
 
     if service['check_method'] == 'http':
         method = check_service_http
@@ -14,10 +15,19 @@ def check_service(service):
         method = check_service_icmp
     
     result = method(service['address'])
-    check = Check(
-        service_id=service['id'],
-        datetime=current_time,
-        response=result
-    )
-    db.session.add(check)
-    db.session.commit()
+
+    if result['status'] == 'error':
+        return None
+    
+    from __main__ import app
+    from models import db, Check
+    
+    with app.app_context():
+        check = Check(
+            service_id=service['id'],
+            datetime=str(current_time),
+            result=json.dumps(result)
+        )
+        db.session.add(check)
+        db.session.commit()
+        print('succeed')
