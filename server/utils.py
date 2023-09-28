@@ -1,6 +1,5 @@
 import requests
-import platform
-import subprocess
+import icmplib
 
 
 def check_service_http(address):
@@ -30,21 +29,18 @@ def check_service_http(address):
 def check_service_icmp(address):
     if address.startswith('http'):
         address = address.split('//')[1]
-    
-    sys_name = platform.system().lower()
-    param = '-n' if sys_name == 'windows' else '-c'
-    command = ['ping', param, '1', address]
+
     response = None
     result = None
 
     try:
-        response = subprocess.check_output(command).decode('cp866')
+        response = icmplib.ping(address, 4)
     except:
         result = { 'status': 'error' }
 
     result = {
         'status': 'ok',
-        'response_time': response.split('Среднее = ')[1].split(' мсек')[0]
+        'response_time': response.avg_rtt
     }
     return result
 
