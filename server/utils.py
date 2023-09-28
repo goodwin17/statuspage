@@ -1,25 +1,29 @@
 import requests
 import platform
 import subprocess
-from time import time
-import threading
 
 
 def check_service_http(address):
     if not address.startswith('http'):
         address = f'https://{address}'
 
+    response = None
+    result = None
+
     try:
         response = requests.get(address)
-        result = {
-            'status': response.status_code,
-            'response_time': response.elapsed
-        }
     except:
-        result = {
-            'status': 'error'
-        }
+        result = { 'status': 'error' }
+        return result
     
+    if response.status_code >= 400:
+        result = { 'status': 'error' }
+        return result
+    
+    result = {
+        'status': 'ok',
+        'response_time': str(response.elapsed)
+    }
     return result
 
 
@@ -30,18 +34,18 @@ def check_service_icmp(address):
     sys_name = platform.system().lower()
     param = '-n' if sys_name == 'windows' else '-c'
     command = ['ping', param, '1', address]
+    response = None
+    result = None
 
     try:
         response = subprocess.check_output(command).decode('cp866')
-        result = {
-            'status': 'ok',
-            'response_time': response.split('Среднее = ')[1].split(' мсек')[0]
-        }
     except:
-        result = {
-            'status': 'error'
-        }
-    
+        result = { 'status': 'error' }
+
+    result = {
+        'status': 'ok',
+        'response_time': response.split('Среднее = ')[1].split(' мсек')[0]
+    }
     return result
 
 
@@ -49,26 +53,5 @@ def serialize(obj):
     return {c.name: getattr(obj, c.name) for c in obj.__table__.columns}
 
 
-def set_service_monitoring(url, interval):
-    while True:
-        check_thread = threading.Thread(target=check_service_http, args=(url,))
-        print(f'check started at {url}')
-        check_thread.daemon = True
-        check_thread.start()
-        time.sleep(interval)
-
-
-def monitor(websites):
-    threads = []
-    
-    for website in websites:
-        url = website["url"]
-        interval = website["interval"]
-        print(f"Monitoring {url} every {interval} seconds.")
-        thread = threading.Thread(target=set_service_monitoring, args=(url, interval))
-        thread.daemon = True
-        thread.start()
-        threads.append(thread)
-    
-    for thread in threads:
-        thread.join()
+def serialize_all(objs):
+    return [serialize(obj) for obj in objs]
