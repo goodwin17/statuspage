@@ -1,17 +1,28 @@
 from flask import Flask, request, jsonify, make_response
 from flask_sqlalchemy import SQLAlchemy
-from models import *
-from utils import serialize
 from flask_jwt_extended import JWTManager, create_access_token, unset_jwt_cookies,\
     jwt_required, set_access_cookies, verify_jwt_in_request,\
     get_jwt_identity, create_refresh_token, set_refresh_cookies
+from flask_apscheduler import APScheduler
 from werkzeug.security import generate_password_hash, check_password_hash
+
 
 app = Flask(__name__)
 
 app.config.from_pyfile("config.py")
 
-db = SQLAlchemy(app)
+from models import db, User, Service, Incident
+from monitoring import Monitoring
+from utils import serialize, serialize_all
+
+with app.app_context():
+    # db.create_all() # create tables if some tables don't exist
+    services = serialize_all(db.session.query(Service).all())
+    monitoring = Monitoring(APScheduler(), services)
+    
+    # if len(services) > 0:
+    monitoring.setup()
+
 jwt = JWTManager(app)
 
 
@@ -52,6 +63,7 @@ def api_services():
         return jsonify({ "msg": "service already exist" }), 409
     
     db.session.commit()
+    monitoring.add(serialize(service))
     return jsonify({ "msg": "service added" })
 
 
@@ -160,4 +172,4 @@ def api_refresh():
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=True, use_reloader=False)
