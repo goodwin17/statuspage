@@ -7,22 +7,26 @@ def check_service_http(address):
         address = f'https://{address}'
 
     response = None
-    result = None
+    result = {
+        'status': None,
+        'code': None,
+        'response_time': None
+    }
 
     try:
         response = requests.get(address)
     except:
-        result = { 'status': 'error' }
+        result['status'] = 'error'
         return result
     
     if response.status_code >= 400:
-        result = { 'status': 'error' }
+        result['status'] = 'error'
+        result['code'] = response.status_code
         return result
     
-    result = {
-        'status': 'ok',
-        'response_time': str(response.elapsed)
-    }
+    result['status'] = 'ok'
+    result['code'] = response.status_code
+    result['response_time'] = str(response.elapsed)
     return result
 
 
@@ -36,12 +40,10 @@ def check_service_icmp(address):
     try:
         response = icmplib.ping(address, 4)
     except:
-        result = { 'status': 'error' }
+        result['status'] = 'error'
 
-    result = {
-        'status': 'ok',
-        'response_time': response.avg_rtt
-    }
+    result['status'] = 'ok'
+    result['response_time'] = response.avg_rtt
     return result
 
 
