@@ -2,7 +2,7 @@ from utils import check_service_http, check_service_icmp, serialize
 from datetime import datetime
 import json
 from __main__ import app
-from models import db, Check
+from models import db, Check, Incident
 
 
 class Monitoring:
@@ -90,5 +90,28 @@ class Monitoring:
             )
             db.session.add(check)
             db.session.commit()
+
+            if service['last_status'] != result['status']:
+                self.__register_incident(service, serialize(check))
             
             service['last_status'] = result['status']
+
+
+    def __register_incident(self, service, check):
+        title = None
+        status = check['result']['status']
+        if status == 'ok':
+            title = 'Running again'
+        else:
+            title = 'Down right now'
+
+        incident = Incident(
+            service_id=service['id'],
+            title=title,
+            reason='<blank>',
+            details=None
+        )
+
+        with app.app_context():
+            db.session.add(incident)
+            db.session.commit()
