@@ -81,11 +81,18 @@ def api_services_id(id):
     
     if request.method == "PUT":
         try:
+            current_status = service['monitoring_status']
             service_query.update(data)
+            db.session.commit()
+
+            if current_status != data['monitoring_status']:
+                if data['monitoring_status'] == 1:
+                    monitoring.start(id)
+                else:
+                    monitoring.stop(id)
         except:
             return jsonify({ "msg": "can not update service" })
         
-        db.session.commit()
         return jsonify({ "msg": "service updated" })
     
     try:

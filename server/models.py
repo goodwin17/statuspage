@@ -29,6 +29,7 @@ class Check(db.Model):
 class Incident(db.Model):
     id = db.Column(db.Integer, primary_key=True, unique=True, autoincrement=True)
     service_id = db.Column(db.Integer, db.ForeignKey('service.id'), nullable=False)
+    title = db.Column(db.Text, nullable=False)
     reason = db.Column(db.Text)
     details = db.Column(db.Text)
     datetime = db.Column(db.Text, nullable=False)
