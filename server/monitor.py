@@ -56,10 +56,8 @@ class Monitor:
 
     def check_service(self, service_id):
         service = self.service(service_id)
-        print('check start')
 
         if service is None:
-            print('no service')
             return None
         
         method = None
@@ -71,10 +69,7 @@ class Monitor:
         else:
             method = check_service_icmp
         
-        print('check preparing...')
         result = method(service.address)
-        print('check processing...')
-        print(result)
 
         if result['status'] == 'error': # either 'ok' or 'error'
             return None
@@ -84,7 +79,6 @@ class Monitor:
             datetime=str(current_time),
             result=json.dumps(result)
         )
-        print('check added...')
         with app.app_context():
             db.session.add(check)
             db.session.commit()
