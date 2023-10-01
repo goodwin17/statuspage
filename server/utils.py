@@ -53,3 +53,7 @@ def serialize(obj):
 
 def serialize_all(objs):
     return [serialize(obj) for obj in objs]
+
+
+def convert_dict_notation(data): # convert json notation to python
+    return { key.replace('-', '_'): data[key] for key in data}
