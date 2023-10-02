@@ -94,7 +94,6 @@ class Monitor:
             self.register_incident(service_id, last_status, result['status'], current_time)
 
 
-
     def register_incident(self, service_id, last_check_status, current_check_status, current_time):
         title = None
 
