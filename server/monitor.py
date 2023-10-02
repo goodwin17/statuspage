@@ -24,7 +24,7 @@ class Monitor:
             id=str(service.id),
             func=self.check_service,
             args=[service.id],
-            trigger='interval',
+            trigger="interval",
             seconds=service.check_interval
         )
         self.last_statuses[service.id] = None
@@ -68,14 +68,14 @@ class Monitor:
         method_func = None
         current_time = str(datetime.now())
 
-        if service.check_method == 'http':
+        if service.check_method == "http":
             method_func = check_service_http
         else:
             method_func = check_service_icmp
         
         result = method_func(service.address)
 
-        if result['status'] == 'error': # either 'ok' or 'error'
+        if result["status"] == "error": # either "ok" or "error"
             return None
         
         check = Check(
@@ -90,8 +90,8 @@ class Monitor:
         
         last_status = self.last_statuses[service_id]
 
-        if last_status is None or last_status != result['status']:
-            self.register_incident(service_id, last_status, result['status'], current_time)
+        if last_status is None or last_status != result["status"]:
+            self.register_incident(service_id, last_status, result["status"], current_time)
 
 
     def register_incident(self, service_id, last_check_status, current_check_status, current_time):

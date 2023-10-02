@@ -2,7 +2,6 @@ from flask import Flask, request, jsonify, make_response
 from flask_jwt_extended import JWTManager, create_access_token, unset_jwt_cookies,\
     jwt_required, set_access_cookies, verify_jwt_in_request,\
     get_jwt_identity, create_refresh_token, set_refresh_cookies
-from flask_apscheduler import APScheduler
 from werkzeug.security import generate_password_hash, check_password_hash
 from utils import serialize, serialize_all, convert_dict_notation
 
@@ -13,7 +12,7 @@ jwt = JWTManager(app)
 from monitor import Monitor
 from models import db, User, Service, Incident
 
-service_monitor = Monitor(APScheduler(app=app))
+service_monitor = Monitor()
 
 
 @app.route("/")
@@ -108,7 +107,7 @@ def api_services_id_change_status(id):
     return jsonify({ "msg": "service monitoring status changed" })
 
 
-@app.route("/api/incidents", methods=["GET"]) # 'service-id' parameter is necessary
+@app.route("/api/incidents", methods=["GET"]) # service-id parameter is necessary
 def api_incidents_service_id():
     service_id = request.args.get("service-id")
 
@@ -119,7 +118,7 @@ def api_incidents_service_id():
     return jsonify(serialize_all(incidents))
 
 
-@app.route("/api/checks") # 'service-id' parameter is necessary
+@app.route("/api/checks") # service-id parameter is necessary
 def api_checks_service_id():
     return "Checks here"
 
@@ -180,7 +179,7 @@ def api_refresh():
 
 if __name__ == "__main__":
     with app.app_context():
-        db.create_all() # create tables if some tables don't exist
+        db.create_all() # create tables if some tables do not exist
         service_monitor.run()
 
     app.run(debug=True, use_reloader=False)

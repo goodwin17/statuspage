@@ -19,20 +19,20 @@ class Service(db.Model):
     check_method = db.Column(db.Text, nullable=False)
     check_interval = db.Column(db.Integer, nullable=False)
     monitoring_status = db.Column(db.Integer, nullable=False)
-    checks = db.relationship('Check', backref='service')
-    incidents = db.relationship('Incident', backref='service')
+    checks = db.relationship("Check", backref="service")
+    incidents = db.relationship("Incident", backref="service")
 
 
 class Check(db.Model):
     id = db.Column(db.Integer, primary_key=True, unique=True, autoincrement=True)
-    service_id = db.Column(db.Integer, db.ForeignKey('service.id'))
+    service_id = db.Column(db.Integer, db.ForeignKey("service.id"))
     datetime = db.Column(db.Text, nullable=False)
     result = db.Column(db.Text) # JSON with status, code and response_time
 
 
 class Incident(db.Model):
     id = db.Column(db.Integer, primary_key=True, unique=True, autoincrement=True)
-    service_id = db.Column(db.Integer, db.ForeignKey('service.id'))
+    service_id = db.Column(db.Integer, db.ForeignKey("service.id"))
     title = db.Column(db.Text, nullable=False)
     reason = db.Column(db.Text)
     details = db.Column(db.Text)
