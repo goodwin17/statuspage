@@ -2,21 +2,34 @@ import { AppBar, Container, Toolbar, Button } from "@mui/material";
 
 export default function Header() {
     return (
-        <AppBar>
+        <AppBar position="static">
             <Container>
-                <Toolbar>
+                <Toolbar sx={{
+                    display: "flex",
+                    flexDirection: "row",
+                    width: "100%",
+                    justifyContent: "space-between"
+                }}>
                     <Button
-                        variant="outlined"
+                        variant="text"
                         component="a"
-                        sx={{ color: "white" }}
+                        sx={{
+                            color: "white",
+                            fontSize: "1.8rem"
+                        }}
                     >
-                        LOGO_PLACE
+                        Status Page
                     </Button>
                     <Button
-                        variant="outlined"
+                        variant="text"
                         component="a"
-                        sx={{ color: "white" }}
-                    >Login</Button>
+                        sx={{
+                            color: "white",
+                            fontSize: "1rem"
+                        }}
+                    >
+                        Login
+                    </Button>
                 </Toolbar>
             </Container>
         </AppBar>
