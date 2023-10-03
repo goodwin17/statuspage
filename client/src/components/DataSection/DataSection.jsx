@@ -10,11 +10,18 @@ export default function DataSection({ title, details=null, children }) {
                 display: 'flex',
                 flexDirection: 'row'
             }}>
-                <Typography>
+                <Typography
+                    variant="h2"
+                    fontWeight="500"
+                >
                     {title}
                 </Typography>
                 {details && (
-                    <Typography marginLeft='1rem'>
+                    <Typography
+                        variant="h3"
+                        component="span"
+                        marginLeft="1rem"
+                    >
                         {details}
                     </Typography>
                 )}
