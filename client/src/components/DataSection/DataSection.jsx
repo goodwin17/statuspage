@@ -1,4 +1,4 @@
-import { Container, Typography, Box } from "@mui/material";
+import { Container, Typography, Box, Paper } from "@mui/material";
 
 export default function DataSection({ title, details=null, children }) {
     return (
@@ -26,9 +26,9 @@ export default function DataSection({ title, details=null, children }) {
                     </Typography>
                 )}
             </Box>
-            <Box>
+            <Paper elevation={4} sx={{borderRadius: '1rem'}}>
                 {children}
-            </Box>
+            </Paper>
         </Container>
     );
 }
