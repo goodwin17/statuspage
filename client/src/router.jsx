@@ -4,6 +4,7 @@ import IndexPage from "@pages/IndexPage";
 import ServicePage from "@pages/ServicePage";
 import LoginPage from "@pages/LoginPage";
 import AdminPage from "@pages/IndexPage";
+import TestPage from "@pages/TestPage";
 
 const router = createBrowserRouter([
     {
@@ -21,6 +22,9 @@ const router = createBrowserRouter([
         }, {
             path: "admin",
             element: <AdminPage />
+        }, {
+            path: "test",
+            element: <TestPage />
         }]
     },
 ]);
