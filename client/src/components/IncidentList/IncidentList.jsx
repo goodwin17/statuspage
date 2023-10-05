@@ -2,19 +2,25 @@ import { List, ListItem, ListItemText, Typography } from "@mui/material";
 import IncidentListItemIcon from '@components/IncidentListItemIcon';
 
 export default function IncidentList({ incidents }) {
+    // incidents = [{
+    //     id,
+    //     type,
+    //     title,
+    //     reason,
+    //     code?
+    //     datetime
+    // }, ...];
+
+    // incident types: up, down, stopped, started
+
     return (
         <List>
             {incidents.map(incident => (
                 <ListItem key={incident.id} >
-                    <IncidentListItemIcon incidentTitle={incident.title} />
+                    <IncidentListItemIcon iconType={incident.type} />
                     <ListItemText
                         primary={incident.title}
-                        secondary={(
-                            <>
-                                <Typography>{incident.reason}</Typography>
-                                <Typography>{incident.datetime}</Typography>
-                            </>
-                        )}
+                        secondary={incident.datetime}
                     />
                 </ListItem>
             ))}

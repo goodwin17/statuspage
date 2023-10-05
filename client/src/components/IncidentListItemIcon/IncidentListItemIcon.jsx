@@ -2,24 +2,25 @@ import ArrowCircleUpIcon from "@mui/icons-material/ArrowCircleUp";
 import ArrowCircleDownIcon from "@mui/icons-material/ArrowCircleDown";
 import PauseCircleOutlineIcon from '@mui/icons-material/PauseCircleOutline';
 import PlayCircleOutlineIcon from '@mui/icons-material/PlayCircleOutline';
+import ListItemIcon from '@mui/material/ListItemIcon';
 import { useState } from "react";
 
-export default function IncidentListItemIcon({ incidentTitle }) {
-    const getIcon = incidentTitle => {
-        if (incidentTitle.includes('Running')) {
-            return <ArrowCircleUpIcon sx={{minWidth: '24px', marginRight: '0.8rem'}} />;
-        } else if (incidentTitle.includes('Down')) {
-            return <ArrowCircleDownIcon sx={{minWidth: '24px', marginRight: '0.8rem'}} />;
-        } else if (incidentTitle.includes('paused')) {
-            return <PauseCircleOutlineIcon sx={{minWidth: '24px', marginRight: '0.8rem'}} />;
-        } else {
-            return <PlayCircleOutlineIcon sx={{minWidth: '24px', marginRight: '0.8rem'}} />;
-        }
-    };
+const icons = {
+    'up': <ArrowCircleUpIcon />,
+    'down': <ArrowCircleDownIcon />,
+    'stopped': <PauseCircleOutlineIcon />,
+    'started': <PlayCircleOutlineIcon />
+};
 
-    const [icon, setIcon] = useState(getIcon(incidentTitle));
+export default function IncidentListItemIcon({ iconType }) {
+    const [icon, setIcon] = useState(icons[iconType]);
 
     return (
-        <>{icon}</>
+        <ListItemIcon sx={{
+            minWidth: '24px',
+            marginRight: '0.8rem'
+        }}>
+            {icon}
+        </ListItemIcon>
     );
 }
