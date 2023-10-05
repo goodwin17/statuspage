@@ -26,7 +26,7 @@ export default function DataSection({ title, details=null, children }) {
                     </Typography>
                 )}
             </Box>
-            <Paper elevation={4} sx={{borderRadius: '1rem'}}>
+            <Paper elevation={4} sx={{borderRadius: '0.8rem', padding: '2rem'}}>
                 {children}
             </Paper>
         </Container>

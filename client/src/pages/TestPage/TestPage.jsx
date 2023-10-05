@@ -1,20 +1,32 @@
 import DataSection from "@components/DataSection";
+import DataStack from "@components/DataStack";
 import IncidentList from "@components/IncidentList";
 import { Typography } from "@mui/material";
 
+const incidents = [{
+    id: 1,
+    title: "Running again",
+    reason: "Some reason",
+    datetime: "some date"
+}, {
+    id: 2,
+    title: "Down right now",
+    reason: "Some reason",
+    datetime: "some date"
+}];
+
+const overallUptimeData = [{
+    capture: 'Last day',
+    value: '99%',
+}, {
+    capture: 'Last 7 days',
+    value: '98.23%'
+}, {
+    capture: 'Last 30 days',
+    value: '97.456%'
+},];
+
 export default function TestPage() {
-    const incidents = [{
-        id: 1,
-        title: "Running again",
-        reason: "Some reason",
-        datetime: "some date"
-    }, {
-        id: 2,
-        title: "Down right now",
-        reason: "Some reason",
-        datetime: "some date"
-    }];
-    
     return (
         <>
             <DataSection title="Test" details="Something">
@@ -26,6 +38,9 @@ export default function TestPage() {
             <Typography>
                 Another test
             </Typography>
+            <DataSection title="Overall uptime">
+                <DataStack dataItems={overallUptimeData} />
+            </DataSection>
         </>
     );
 }
