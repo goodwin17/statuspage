@@ -1,5 +1,6 @@
-import { Divider, List, ListItem, ListItemText, Typography } from "@mui/material";
+import { Divider, List, ListItem, ListItemText } from "@mui/material";
 import IncidentListItemIcon from '@components/IncidentListItemIcon';
+import { Fragment } from "react";
 
 export default function IncidentList({ incidents }) {
     // incidents = [{
@@ -16,12 +17,9 @@ export default function IncidentList({ incidents }) {
     return (
         <List>
             {incidents.map((incident, index) => (
-                <>
+                <Fragment key={incident.id}>
                     {index > 0 && <Divider />}
-                    <ListItem
-                        key={incident.id}
-                        disableGutters
-                    >
+                    <ListItem disableGutters>
                         <IncidentListItemIcon iconType={incident.type} />
                         <ListItemText
                             primary={incident.title}
@@ -30,10 +28,9 @@ export default function IncidentList({ incidents }) {
                                 fontWeight: 500
                             }}
                             secondary={incident.datetime}
-                            // sx={{fontWeight: 500}}
                         />
                     </ListItem>
-                </>
+                </Fragment>
             ))}
         </List>
     );
