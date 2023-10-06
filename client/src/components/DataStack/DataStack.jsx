@@ -11,7 +11,7 @@ export default function DataStack({ dataItems }) {
 
     return (
         <Stack
-            spacing={2}
+            spacing={5}
             direction={'row'}
             divider={
                 <Divider
@@ -20,11 +20,10 @@ export default function DataStack({ dataItems }) {
                 />
             }
             width="100%"
-            justifyContent="space-between"
         >
             {dataItems.map((item, index) => (
-                <Box key={index} textAlign={'left'} flex={1} paddingLeft={2}>
-                    <Typography fontSize={'1.6rem'} fontWeight={500}>
+                <Box key={index} textAlign={'left'} flex={1}>
+                    <Typography fontSize={'1.5rem'} fontWeight={500}>
                         {item.value}
                     </Typography>
                     <Typography fontSize={'1.1rem'}>

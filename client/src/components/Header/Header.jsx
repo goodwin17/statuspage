@@ -4,7 +4,7 @@ export default function Header() {
     return (
         <AppBar position="static">
             <Container>
-                <Toolbar sx={{
+                <Toolbar disableGutters sx={{
                     display: "flex",
                     flexDirection: "row",
                     width: "100%",

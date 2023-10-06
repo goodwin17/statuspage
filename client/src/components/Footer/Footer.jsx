@@ -7,10 +7,12 @@ export default function Footer() {
     return (
         <Paper
             component="footer"
+            elevation={4}
             square
             sx={{
                 color: 'white',
-                backgroundColor: theme.palette.primary.main
+                backgroundColor: theme.palette.primary.main,
+                marginTop: 'auto'
             }}
         >
             <Container sx={{padding: '1rem', fontSize: '1.2rem'}}>

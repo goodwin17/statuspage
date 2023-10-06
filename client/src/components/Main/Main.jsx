@@ -1,7 +1,11 @@
+import { Container } from "@mui/material";
+
 export default function Main({ children }) {
     return (
         <main>
-            {children}
+            <Container>
+                {children}
+            </Container>
         </main>
     );
 }

@@ -1,4 +1,4 @@
-import { List, ListItem, ListItemText, Typography } from "@mui/material";
+import { Divider, List, ListItem, ListItemText, Typography } from "@mui/material";
 import IncidentListItemIcon from '@components/IncidentListItemIcon';
 
 export default function IncidentList({ incidents }) {
@@ -15,14 +15,25 @@ export default function IncidentList({ incidents }) {
 
     return (
         <List>
-            {incidents.map(incident => (
-                <ListItem key={incident.id} >
-                    <IncidentListItemIcon iconType={incident.type} />
-                    <ListItemText
-                        primary={incident.title}
-                        secondary={incident.datetime}
-                    />
-                </ListItem>
+            {incidents.map((incident, index) => (
+                <>
+                    {index > 0 && <Divider />}
+                    <ListItem
+                        key={incident.id}
+                        disableGutters
+                    >
+                        <IncidentListItemIcon iconType={incident.type} />
+                        <ListItemText
+                            primary={incident.title}
+                            primaryTypographyProps={{
+                                fontSize: '1.2rem',
+                                fontWeight: 500
+                            }}
+                            secondary={incident.datetime}
+                            // sx={{fontWeight: 500}}
+                        />
+                    </ListItem>
+                </>
             ))}
         </List>
     );

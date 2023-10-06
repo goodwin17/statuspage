@@ -1,7 +1,12 @@
+import DataSection from "@components/DataSection";
+
 export default function IndexPage() {
     return (
         <>
-            Index page
+            {/* <DataSection title="Test" details="Something">
+                Index page
+            </DataSection> */}
+            Index
         </>
     );
 }

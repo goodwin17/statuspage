@@ -5,11 +5,13 @@ import { Typography } from "@mui/material";
 
 const incidents = [{
     id: 1,
+    type: 'up',
     title: "Running again",
     reason: "Some reason",
     datetime: "some date"
 }, {
     id: 2,
+    type: 'down',
     title: "Down right now",
     reason: "Some reason",
     datetime: "some date"
@@ -29,6 +31,7 @@ const overallUptimeData = [{
 export default function TestPage() {
     return (
         <>
+            <Typography variant="h1">This is test page</Typography>
             <DataSection title="Test" details="Something">
                 Test page
             </DataSection>
