@@ -1,4 +1,7 @@
-import { AppBar, Container, Toolbar, Button } from "@mui/material";
+import AppBar from "@mui/material/AppBar";
+import Container from "@mui/material/Container";
+import Toolbar from "@mui/material/Toolbar";
+import Button from "@components/Button";
 
 export default function Header() {
     return (
@@ -11,8 +14,7 @@ export default function Header() {
                     justifyContent: "space-between"
                 }}>
                     <Button
-                        variant="text"
-                        component="a"
+                        href="/"
                         sx={{
                             color: "white",
                             fontSize: "1.8rem"
@@ -21,8 +23,7 @@ export default function Header() {
                         Status Page
                     </Button>
                     <Button
-                        variant="text"
-                        component="a"
+                        href="/login"
                         sx={{
                             color: "white",
                             fontSize: "1rem"
