@@ -1,4 +1,7 @@
-import { Divider, List, ListItem, ListItemText } from "@mui/material";
+import Divider from "@mui/material/Divider";
+import List from "@mui/material/List";
+import ListItem from "@mui/material/ListItem";
+import ListItemText from "@mui/material/ListItemText";
 import IncidentListItemIcon from '@components/IncidentListItemIcon';
 import { Fragment } from "react";
 

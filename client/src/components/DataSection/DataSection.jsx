@@ -1,4 +1,6 @@
-import { Container, Typography, Box, Paper } from "@mui/material";
+import Typography from "@mui/material/Typography";
+import Box from "@mui/material/Box";
+import Paper from "@mui/material/Paper";
 
 export default function DataSection({ title, details=null, children }) {
     return (

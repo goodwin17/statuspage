@@ -1,7 +1,7 @@
 import DataSection from "@components/DataSection";
 import DataStack from "@components/DataStack";
 import IncidentList from "@components/IncidentList";
-import { Typography } from "@mui/material";
+import Typography from "@mui/material/Typography";
 
 const incidents = [{
     id: 1,

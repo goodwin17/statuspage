@@ -1,5 +1,6 @@
 import { useTheme } from "@mui/material/styles";
-import { Container, Paper } from "@mui/material";
+import Container from "@mui/material/Container";
+import Paper from "@mui/material/Paper";
 
 export default function Footer() {
     const theme = useTheme();

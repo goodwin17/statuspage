@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Button as MuiButton } from "@mui/material";
+import MuiButton from "@mui/material/Button";
 
 export default function Button(props) {
     if (props.href) {
