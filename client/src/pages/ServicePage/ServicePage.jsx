@@ -2,7 +2,7 @@ import PageTitle from "@components/PageTitle";
 import DataSection from "@components/DataSection";
 import DataStack from "@components/DataStack";
 import IncidentList from "@components/IncidentList";
-import { incidents, overallUptime, service } from "./helpers/placeholders.jsx";
+import { incidents, overallUptime, service } from "@helpers/placeholders.jsx";
 
 export default function ServicePage() {
     return (

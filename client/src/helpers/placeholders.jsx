@@ -33,6 +33,6 @@ const service = {
 
 export {
     incidents,
-    overallUptimeData,
+    overallUptime,
     service
 }
