@@ -15,25 +15,25 @@ const theme = createTheme({
             variants: [{
                 props: { variant: 'h1' },
                 style: {
-                    fontSize: '2.66rem',
+                    fontSize: '2.4rem',
                     fontWeight: 500
                 }
             }, {
                 props: { variant: 'h2' },
                 style: {
-                    fontSize: '2rem',
+                    fontSize: '1.8rem',
                     fontWeight: 500
                 }
             }, {
                 props: { variant: 'h3' },
                 style: {
-                    fontSize: '1.56rem',
+                    fontSize: '1.4rem',
                     fontWeight: 500
                 }
             }, {
                 props: { variant: 'h4' },
                 style: {
-                    fontSize: '1.33rem',
+                    fontSize: '1.2rem',
                     fontWeight: 500
                 }
             }]

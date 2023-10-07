@@ -23,7 +23,7 @@ export default function DataStack({ dataItems }) {
         >
             {dataItems.map((item, index) => (
                 <Box key={index} textAlign={'left'} flex={1}>
-                    <Typography fontSize={'1.5rem'} fontWeight={500}>
+                    <Typography fontSize={'1.55rem'} fontWeight={500}>
                         {item.value}
                     </Typography>
                     <Typography fontSize={'1.1rem'}>

@@ -18,7 +18,7 @@ export default function IncidentList({ incidents }) {
     // incident types: up, down, stopped, started
 
     return (
-        <List>
+        <List disablePadding>
             {incidents.map((incident, index) => (
                 <Fragment key={incident.id}>
                     {index > 0 && <Divider />}
