@@ -1,6 +1,4 @@
-// variables
-
-const incidents = [{
+let incidents = [{
     id: 1,
     type: 'up',
     title: "Running again",
@@ -14,7 +12,7 @@ const incidents = [{
     datetime: "some date"
 }];
 
-const overallUptime = [{
+let overallUptime = [{
     capture: 'Last day',
     value: '99%',
 }, {
@@ -25,7 +23,7 @@ const overallUptime = [{
     value: '97.456%'
 },];
 
-const service = {
+let service = {
     name: 'Example website',
     address: 'https://example.com',
     checkMethod: 'http',
@@ -33,27 +31,8 @@ const service = {
     monitoringStatus: 1
 };
 
-
-// functions
-
-function parseInterval(interval) {
-    let minutes = null;
-    let seconds = null;
-    
-    if (interval >= 60) {
-        minutes =  ~~(interval / 60);
-    }
-
-    if (interval % 60 !== 0) {
-        seconds = interval % 60;
-    }
-
-    return [minutes, seconds];
-}
-
 export {
     incidents,
     overallUptime,
-    service,
-    parseInterval
-}
+    service
+};
