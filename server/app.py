@@ -59,7 +59,6 @@ def api_services():
 
 @app.route("/api/services/<id>", methods=["GET", "PUT", "DELETE"])
 def api_services_id(id):
-    data = request.get_json()
     service_query_filter = db.session.query(Service).filter_by(id=id)
     service = service_query_filter.one_or_none()
     
@@ -70,6 +69,7 @@ def api_services_id(id):
         return jsonify(serialize(service))
     
     verify_jwt_in_request()
+    data = request.get_json()
     
     if request.method == "PUT":
         try:
