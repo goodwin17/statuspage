@@ -1,12 +1,11 @@
-import DataSection from "@components/DataSection";
+import PageTitle from "@components/PageTitle";
 
 export default function IndexPage() {
     return (
         <>
-            {/* <DataSection title="Test" details="Something">
-                Index page
-            </DataSection> */}
-            Index
+            <PageTitle
+                title="IndexPage"
+            />
         </>
     );
 }
