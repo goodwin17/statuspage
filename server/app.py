@@ -4,10 +4,12 @@ from flask_jwt_extended import JWTManager, create_access_token, unset_jwt_cookie
     get_jwt_identity, create_refresh_token, set_refresh_cookies
 from werkzeug.security import generate_password_hash, check_password_hash
 from utils import serialize, serialize_all, convert_dict_notation
+from flask_cors import CORS
 
 app = Flask(__name__)
 app.config.from_pyfile("config.py")
 jwt = JWTManager(app)
+CORS(app)
 
 from monitor import Monitor
 from models import db, User, Service, Incident
