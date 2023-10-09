@@ -1,7 +1,23 @@
 from __main__ import app
 from flask_sqlalchemy import SQLAlchemy
+from enum import Enum
 
 db = SQLAlchemy(app)
+
+
+class CheckMethods(Enum):
+    HTTP = "http"
+    ICMP = "icmp"
+
+
+class IncidentTypes(Enum):
+    UP = "up"
+    DOWN = "down"
+
+
+class UserRoles(Enum):
+    ADMIN = "admin"
+    SUPERADMIN = "superadmin"
 
 
 class ExtendedModel(db.Model):
@@ -32,31 +48,37 @@ class ExtendedModel(db.Model):
 
 
 class User(ExtendedModel):
-    name = db.Column(db.Text, nullable=False)
-    login = db.Column(db.Text, unique=True, nullable=False)
-    password_hash = db.Column(db.Text, nullable=False)
-    role = db.Column(db.Text, nullable=False)
+    name = db.Column(db.String, nullable=False)
+    login = db.Column(db.String, unique=True, nullable=False)
+    password_hash = db.Column(db.String, nullable=False)
+    role = db.Column(db.Enum, nullable=False)
 
 
 class Service(ExtendedModel):
-    name = db.Column(db.Text, unique=True, nullable=False)
-    address = db.Column(db.Text, unique=True, nullable=False)
-    check_method = db.Column(db.Text, nullable=False)
+    name = db.Column(db.String, unique=True, nullable=False)
+    address = db.Column(db.String, unique=True, nullable=False)
+    check_method = db.Column(db.Enum, nullable=False)
     check_interval = db.Column(db.Integer, nullable=False)
-    monitoring_status = db.Column(db.Integer, nullable=False)
+    monitoring_status = db.Column(db.Boolean, nullable=False)
     checks = db.relationship("Check", backref="service")
     incidents = db.relationship("Incident", backref="service")
 
 
 class Check(ExtendedModel):
     service_id = db.Column(db.Integer, db.ForeignKey("service.id"))
-    datetime = db.Column(db.Text, nullable=False)
-    result = db.Column(db.Text) # JSON with status, code and response_time
+    datetime = db.Column(db.String, nullable=False)
+    result = db.Column(db.String) # JSON with status, code and response_time
 
 
 class Incident(ExtendedModel):
     service_id = db.Column(db.Integer, db.ForeignKey("service.id"))
-    type = db.Column(db.Text, nullable=False)
-    title = db.Column(db.Text, nullable=False)
-    datetime = db.Column(db.Text, nullable=False)
-    details = db.Column(db.Text) # JSON with reason and code
+    type = db.Column(db.Enum, nullable=False)
+    title = db.Column(db.String, nullable=False)
+    datetime = db.Column(db.DateTime, nullable=False)
+    details = db.Column(db.String) # JSON with reason and code
+
+
+class DailyUptime(ExtendedModel):
+    service_id = db.Column(db.Integer, db.ForeignKey("service.id"))
+    date = db.Column(db.Date, nullable=False)
+    uptime = db.Column(db.Float, nullable=False)
