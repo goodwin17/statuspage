@@ -1,10 +1,12 @@
+import { Suspense } from "react";
+import { Await, useLoaderData } from "react-router-dom";
+import Skeleton from "@mui/material/Skeleton";
 import PageTitle from "@components/PageTitle";
 import DataSection from "@components/DataSection";
 import DataStack from "@components/DataStack";
 import IncidentList from "@components/IncidentList";
 import { incidents, overallUptime, service } from "@helpers/placeholders.jsx";
 import { parseInterval } from "@helpers/utils.jsx";
-import { useLoaderData } from "react-router-dom";
 
 function getPageSubtitle(intervalMinutes, intervalSeconds) {
     return `Being checked every${intervalMinutes ? ` ${intervalMinutes} minutes` : ""}
@@ -14,7 +16,6 @@ function getPageSubtitle(intervalMinutes, intervalSeconds) {
 
 export default function ServicePage() {
     let loaderData = useLoaderData();
-    console.log(loaderData);
     let [intervalMinutes, intervalSeconds] = parseInterval(service.checkInterval);
     let pageSubtitle = getPageSubtitle(intervalMinutes, intervalSeconds);
 
@@ -24,6 +25,15 @@ export default function ServicePage() {
                 title={`${service.name} is operational`}
                 subtitle={pageSubtitle}
             />
+            <Suspense fallback={<Skeleton />}>
+                <Await resolve={loaderData.service}>
+                    {(service) => (
+                        <PageTitle
+                            title={`This is ${service.msg}`}
+                        />
+                    )}
+                </Await>
+            </Suspense>
             <DataSection title="Test" details="Something">
                 Test page
             </DataSection>
