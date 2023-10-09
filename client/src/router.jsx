@@ -1,7 +1,7 @@
 import { createBrowserRouter } from "react-router-dom";
 import Layout from "@components/Layout";
 import IndexPage from "@pages/IndexPage";
-import ServicePage from "@pages/ServicePage";
+import ServicePage, { loader as servicePageLoader } from "@pages/ServicePage";
 import LoginPage from "@pages/LoginPage";
 import AdminPage from "@pages/IndexPage";
 import TestPage from "@pages/TestPage";
@@ -15,6 +15,7 @@ const router = createBrowserRouter([
             element: <IndexPage />
         }, {
             path: "service",
+            loader: servicePageLoader,
             element: <ServicePage />
         }, {
             path: "login",

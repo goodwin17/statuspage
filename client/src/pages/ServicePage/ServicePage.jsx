@@ -4,6 +4,7 @@ import DataStack from "@components/DataStack";
 import IncidentList from "@components/IncidentList";
 import { incidents, overallUptime, service } from "@helpers/placeholders.jsx";
 import { parseInterval } from "@helpers/utils.jsx";
+import { useLoaderData } from "react-router-dom";
 
 function getPageSubtitle(intervalMinutes, intervalSeconds) {
     return `Being checked every${intervalMinutes ? ` ${intervalMinutes} minutes` : ""}
@@ -12,6 +13,8 @@ function getPageSubtitle(intervalMinutes, intervalSeconds) {
 }
 
 export default function ServicePage() {
+    let loaderData = useLoaderData();
+    console.log(loaderData);
     let [intervalMinutes, intervalSeconds] = parseInterval(service.checkInterval);
     let pageSubtitle = getPageSubtitle(intervalMinutes, intervalSeconds);
 
