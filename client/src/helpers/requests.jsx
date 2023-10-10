@@ -15,4 +15,8 @@ async function getService(serviceId) {
     return null;
 }
 
-export { getService };
+function loginUser(credentials) {
+    axios.post("/login", credentials);
+}
+
+export { getService, loginUser };
