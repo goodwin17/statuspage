@@ -26,6 +26,10 @@ class Monitor:
         self.scheduler.start()
 
 
+    def shutdown(self, wait=False):
+        self.scheduler.shutdown(wait)
+
+
     def add(self, service):
         self.scheduler.add_job(
             id=str(service.id),

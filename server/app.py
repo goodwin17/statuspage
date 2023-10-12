@@ -5,6 +5,7 @@ from flask_jwt_extended import JWTManager, create_access_token, unset_jwt_cookie
 from werkzeug.security import generate_password_hash, check_password_hash
 from utils import serialize, serialize_all, convert_dict_notation
 from flask_cors import CORS
+import atexit
 
 app = Flask(__name__)
 app.config.from_pyfile("config.py")
@@ -196,7 +197,8 @@ def api_refresh():
 
 if __name__ == "__main__":
     with app.app_context():
-        db.create_all() # create tables if some tables do not exist
+        db.create_all() # create tables if some do not exist
         service_monitor.run()
-
+    
+    atexit.register(lambda: service_monitor.shutdown(wait=False))
     app.run(debug=True, use_reloader=False)
