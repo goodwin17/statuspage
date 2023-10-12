@@ -35,12 +35,16 @@ def check_service_icmp(address):
         address = address.split("//")[1]
 
     response = None
-    result = None
+    result = {
+        "status": None,
+        "response_time": None
+    }
 
     try:
         response = icmplib.ping(address, 4)
     except:
         result["status"] = "error"
+        return result
 
     result["status"] = "ok"
     result["response_time"] = response.avg_rtt
