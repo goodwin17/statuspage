@@ -1,14 +1,20 @@
-import { Button, TextField, Typography } from "@mui/material";
 import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
+import TextField from "@mui/material/TextField";
+import Button from "@mui/material/Button";
+import { loginUser } from "@helpers/requests";
 
 export default function LoginForm() {
-    function handleSubmit(event) {
+    async function handleSubmit(event) {
         event.preventDefault();
-        const data = new FormData(event.currentTarget);
-        console.log({
-          login: data.get('login'),
-          password: data.get('password'),
-        });
+        const formData = new FormData(event.currentTarget);
+        const credentials = {
+            'login': formData.get('login'),
+            'password': formData.get('password')
+        };
+
+        let loginSuccess = await loginUser(credentials);
+        console.log(loginSuccess);
     }
     
     return (
@@ -18,7 +24,6 @@ export default function LoginForm() {
             flexDirection: 'column',
             gap: 3,
             padding: 1,
-            // border: '2px solid silver',
             margin: '0 auto',
         }}>
             <Typography variant="h2" align="center">
@@ -29,14 +34,14 @@ export default function LoginForm() {
                 name="login"
                 label="Login"
                 autoFocus
-                />
+            />
             <TextField
                 id="password"
                 type="password"
                 name="password"
                 label="Password"
                 required
-                />
+            />
             <Button
                 type="submit"
                 variant="contained"
