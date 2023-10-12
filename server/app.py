@@ -12,7 +12,7 @@ jwt = JWTManager(app)
 CORS(app)
 
 from monitor import Monitor
-from models import db, User, Service, Incident
+from models import db, User, Service, Incident, UserRole, CheckMethod
 
 service_monitor = Monitor()
 
@@ -41,22 +41,26 @@ def api_services():
     
     verify_jwt_in_request()
     data = request.get_json()
-    service = Service(
-        name=data["name"],
-        address=data["address"],
-        check_method=data["check-method"],
-        check_interval=data["check-interval"],
-        monitoring_status=data["monitoring-status"]
-    )
+    check_method = CheckMethod.get(data["check-method"])
+
+    if check_method is None:
+        return jsonify({ "msg": "no such check method"}), 400
 
     try:
+        service = Service(
+            name=data["name"],
+            address=data["address"],
+            check_method=check_method,
+            check_interval=data["check-interval"],
+            monitoring_status=data["monitoring-status"]
+        )
         db.session.add(service)
         db.session.commit()
     except:
-        return jsonify({ "msg": "service already exist" }), 409
+        return jsonify({ "msg": "service already exists" }), 409
     
     service_monitor.add(service)
-    return jsonify({ "msg": "service added" })
+    return jsonify({ "msg": "service created" })
 
 
 @app.route("/api/services/<id>", methods=["GET", "PUT", "DELETE"])
@@ -79,15 +83,15 @@ def api_services_id(id):
             db.session.commit()
             service_monitor.update(service_query_filter.first())
         except Exception as e:
-            return jsonify({ "msg": "can not update service", "error": str(e) })
+            return jsonify({ "msg": "can not update service", "error": str(e) }), 500
         
         return jsonify({ "msg": "service updated" })
     
     try:
         service_query_filter.delete()
         db.session.commit()
-    except:
-        return jsonify({ "msg": "can not delete service" })
+    except Exception as e:
+        return jsonify({ "msg": "can not delete service", "error": str(e) }), 500
     
     return jsonify({ "msg": "service deleted" })
 
@@ -157,16 +161,27 @@ def api_register():
 
     if db.session.query(User).filter_by(login=data["login"]).one_or_none():
         return jsonify({ "msg": "user already exists" }), 409
+    
+    user_role = UserRole.get(data["role"])
 
-    new_user = User(
-        name=data["name"],
-        login=data["login"],
-        password_hash=generate_password_hash(data["password"], salt_length=64),
-        role=data["role"]
-    )
-    db.session.add(new_user)
-    db.session.commit()
-    return jsonify({ "msg": "user added" })
+    if user_role is None:
+        return jsonify({ "msg": "no such role"}), 400
+    
+    password_hash = generate_password_hash(data["password"], salt_length=64)
+
+    try:
+        user = User(
+            name=data["name"],
+            login=data["login"],
+            password_hash=password_hash,
+            role=user_role
+        )
+        db.session.add(user)
+        db.session.commit()
+    except Exception as e:
+        return jsonify({ "msg": "can not create person", "error": str(e) }), 500
+    
+    return jsonify({ "msg": "user created" })
 
 
 @app.route("/api/refresh", methods=["POST"])
