@@ -8,7 +8,8 @@ export default defineConfig({
     alias: {
       '@components': '/src/components',
       '@pages': '/src/pages',
-      '@helpers': '/src/helpers'
+      '@helpers': '/src/helpers',
+      '@api': '/src/api'
     }
   }
 });
