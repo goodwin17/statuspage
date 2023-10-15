@@ -1,7 +1,4 @@
-import axios from 'axios';
-
-axios.defaults.baseURL = 'http://127.0.0.1:5000/api';
-axios.defaults.headers.common['Content-Type'] = 'application/json';
+import axios from "@api/axios.jsx";
 
 async function getService(serviceId) {
     console.log("getService start");
@@ -15,17 +12,23 @@ async function getService(serviceId) {
     return null;
 }
 
-async function loginUser(credentials) {
-    console.log("logging in user...");
-    let response = await axios.post("/login", credentials).catch(error => console.log(error));
-    
-    if (response) {
-        console.log("user logged in");
-        return true;
-    }
+async function createService(service) {
+    let { name, address, checkMethod, checkInterval } = service;
+    console.log("createService start");
+    let response = await axios.post("/services", {
+        "name": name,
+        "address": address,
+        "check-method": checkMethod,
+        "check-interval": checkInterval
+    }).catch(error => console.log(error));
 
-    console.log("something went wrong");
-    return false;
+    if (!response) {
+        console.log("createService went wrong");
+        return false;
+    }
+    
+    console.log("createService ok");
+    return true;
 }
 
 async function registerUser(credentials) {
@@ -41,9 +44,8 @@ async function registerUser(credentials) {
     return false;
 }
 
-
 export {
     getService,
-    loginUser,
-    registerUser
+    registerUser,
+    createService
 };
