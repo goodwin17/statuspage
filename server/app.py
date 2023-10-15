@@ -10,12 +10,7 @@ import atexit
 app = Flask(__name__)
 app.config.from_pyfile("config.py")
 jwt = JWTManager(app)
-CORS(
-    app=app,
-    origins='http://127.0.0.1:5173',
-    methods=['GET', 'POST', 'PUT', 'DELETE'],
-    supports_credentials=True
-)
+CORS(app)
 
 from monitor import Monitor
 from models import db, User, Service, Incident, UserRole, CheckMethod
