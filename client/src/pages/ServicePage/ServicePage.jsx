@@ -28,9 +28,7 @@ export default function ServicePage() {
             <Suspense fallback={<Skeleton />}>
                 <Await resolve={loaderData.service}>
                     {(service) => (
-                        <PageTitle
-                            title={`This is ${service.msg}`}
-                        />
+                        <PageTitle title={`This is ${service.msg}`} />
                     )}
                 </Await>
             </Suspense>
