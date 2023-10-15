@@ -1,5 +1,6 @@
 import requests
 import icmplib
+from enum import Enum
 
 
 def check_service_http(address):
@@ -52,7 +53,19 @@ def check_service_icmp(address):
 
 
 def serialize(obj):
-    return {c.name: getattr(obj, c.name) for c in obj.__table__.columns}
+    result = {}
+
+    for col in obj.__table__.columns:
+        col_name = col.name
+        col_value = getattr(obj, col.name)
+        
+        if isinstance(col_value, Enum):
+            print(col_value.value)
+            col_value = col_value.value
+        
+        result[col_name] = col_value
+    
+    return result
 
 
 def serialize_all(objs):
