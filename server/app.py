@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify, make_response
 from flask_jwt_extended import JWTManager, create_access_token, unset_jwt_cookies,\
     jwt_required, set_access_cookies, verify_jwt_in_request,\
-    get_jwt_identity, create_refresh_token, set_refresh_cookies
+    get_jwt_identity, create_refresh_token, set_refresh_cookies, unset_access_cookies
 from werkzeug.security import generate_password_hash, check_password_hash
 from utils import serialize, serialize_all, convert_dict_notation
 from flask_cors import CORS
@@ -10,7 +10,12 @@ import atexit
 app = Flask(__name__)
 app.config.from_pyfile("config.py")
 jwt = JWTManager(app)
-CORS(app)
+CORS(
+    app=app,
+    origins='http://127.0.0.1:5173',
+    methods=['GET', 'POST', 'PUT', 'DELETE'],
+    supports_credentials=True
+)
 
 from monitor import Monitor
 from models import db, User, Service, Incident, UserRole, CheckMethod
