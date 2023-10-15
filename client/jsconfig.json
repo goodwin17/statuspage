@@ -5,6 +5,8 @@
             "@components/*": ["components/*"],
             "@pages/*": ["pages/*"],
             "@helpers/*": ["helpers/*"],
+            "@contexts/*": ["contexts/*"],
+            "@hooks/*": ["hooks/*"],
             "@api/*": ["api/*"]
         }
 	}

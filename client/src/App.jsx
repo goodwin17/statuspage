@@ -4,6 +4,7 @@ import "@fontsource/roboto/400.css";
 import "@fontsource/roboto/500.css";
 import "@fontsource/roboto/700.css";
 import router from "./router.jsx";
+import { AuthProvider } from "@contexts/AuthContext.jsx";
 
 export default function App() {
     return (
@@ -15,7 +16,9 @@ export default function App() {
                 flexDirection: 'column'
             }}
         >
-            <RouterProvider router={router} />
+            <AuthProvider>
+                <RouterProvider router={router} />
+            </AuthProvider>
         </div>
     );
 }
