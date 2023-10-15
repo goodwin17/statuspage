@@ -185,7 +185,7 @@ def api_register():
         db.session.add(user)
         db.session.commit()
     except Exception as e:
-        return jsonify({ "msg": "can not create person", "error": str(e) }), 500
+        return jsonify({ "msg": "can not create user", "error": str(e) }), 500
     
     return jsonify({ "msg": "user created" })
 
