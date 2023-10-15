@@ -53,7 +53,7 @@ def api_services():
             address=data["address"],
             check_method=check_method,
             check_interval=data["check-interval"],
-            monitoring_status=data["monitoring-status"]
+            monitoring_status=True
         )
         db.session.add(service)
         db.session.commit()
@@ -102,12 +102,12 @@ def api_services_id(id):
 def api_services_id_change_status(id):
     service = db.session.query(Service).filter_by(id=id).first()
     
-    if service.monitoring_status == 1:
-        service.monitoring_status = 0
+    if service.monitoring_status:
+        service.monitoring_status = False
         db.session.commit()
         service_monitor.stop(id)
     else:
-        service.monitoring_status = 1
+        service.monitoring_status = True
         db.session.commit()
         service_monitor.start(id)
     
@@ -188,17 +188,21 @@ def api_register():
 @app.route("/api/refresh", methods=["POST"])
 @jwt_required(refresh=True)
 def api_refresh():
-    identity = get_jwt_identity()
-    access_token = create_access_token(identity)
-    response = make_response({ "msg": "successfully logged in" })
-    set_access_cookies(response, access_token)
-    return response
+    try:
+        identity = get_jwt_identity()
+        access_token = create_access_token(identity)
+        response = make_response({ "msg": "successfully refreshed" })
+        unset_access_cookies(response)
+        set_access_cookies(response, access_token)
+        return response
+    except:
+        return jsonify({ "msg": "can not refresh token" }), 500
 
 
 if __name__ == "__main__":
     with app.app_context():
         db.create_all() # create tables if some do not exist
-        service_monitor.run()
-    
+
+    service_monitor.run()
     atexit.register(lambda: service_monitor.shutdown(wait=False))
     app.run(debug=True, use_reloader=False)
