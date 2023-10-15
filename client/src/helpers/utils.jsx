@@ -13,4 +13,22 @@ const parseInterval = (interval) => {
     return [minutes, seconds];
 }
 
-export { parseInterval };
+const getCookie = (name) => {
+    console.log(document.cookie);
+    let cookie = document.cookie.split('; ').find(item => item.startsWith(`${name}=`));
+    console.log(cookie);
+
+    if (!cookie) {
+        return null;
+    }
+
+    console.log("there is cookie");
+    
+    let cookieValue = cookie.split('=')[1];
+    return cookieValue;
+}
+
+export {
+    parseInterval,
+    getCookie
+};
