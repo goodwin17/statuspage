@@ -3,13 +3,14 @@ import axios from "@api/axios.jsx";
 async function getService(serviceId) {
     console.log("getService start");
     let response = await axios.get(`/services/${serviceId}`).catch(error => console.log(error));
-    console.log("getService end");
 
-    if (response) {
-        return response.data;
+    if (!response) {
+        console.log("getService went wrong");
+        return null;
     }
-
-    return null;
+    
+    console.log("getService ok");
+    return response.data;
 }
 
 async function createService(service) {
@@ -31,21 +32,27 @@ async function createService(service) {
     return true;
 }
 
-async function registerUser(credentials) {
-    console.log("registering user...");
-    let response = await axios.post("/register", credentials).catch(error => console.log(error));
+async function createUser(user) {
+    let { name, login, password, role } = user;
+    console.log("createUser start");
+    let response = await axios.post("/register", {
+        "name": name,
+        "login": login,
+        "password": password,
+        "role": role
+    }).catch(error => console.log(error));
     
-    if (response) {
-        console.log("user registered");
-        return true;
+    if (!response) {
+        console.log("createUser went wrong");
+        return false;
     }
-
-    console.log("something went wrong");
-    return false;
+    
+    console.log("createUser ok");
+    return true;
 }
 
 export {
     getService,
-    registerUser,
+    createUser,
     createService
 };

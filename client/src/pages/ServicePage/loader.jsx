@@ -1,4 +1,4 @@
-import { getService } from "@helpers/requests";
+import { getService } from "@api/requests";
 import { defer } from "react-router-dom";
 
 export async function loader({ params }) {
