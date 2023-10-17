@@ -8,9 +8,11 @@ export default function PageTitle({ title, subtitle }) {
                 {title}
             </Typography>
             {subtitle && (
-                <Typography sx={{fontSize: '1.2rem'}}>
-                    {subtitle}
-                </Typography>
+                typeof subtitle === 'object' ? subtitle : (
+                    <Typography sx={{fontSize: '1.2rem'}}>
+                        {subtitle}
+                    </Typography>
+                )
             )}
         </Box>
     );
