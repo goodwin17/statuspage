@@ -13,6 +13,19 @@ async function getService(serviceId) {
     return response.data;
 }
 
+async function getIncidents(serviceId) {
+    console.log("getIncidents start");
+    let response = await axios.get(`/incidents?service-id=${serviceId}`).catch(error => console.log(error));
+
+    if (!response) {
+        console.log("getIncidents went wrong");
+        return null;
+    }
+    
+    console.log("getIncidents ok");
+    return response.data;
+}
+
 async function createService(service) {
     let { name, address, checkMethod, checkInterval } = service;
     console.log("createService start");
@@ -52,7 +65,8 @@ async function createUser(user) {
 }
 
 export {
-    getService,
     createUser,
-    createService
+    createService,
+    getService,
+    getIncidents
 };
