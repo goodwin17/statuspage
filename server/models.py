@@ -1,6 +1,7 @@
 from __main__ import app
 from flask_sqlalchemy import SQLAlchemy
 from enum import Enum
+import json
 
 db = SQLAlchemy(app)
 
@@ -81,6 +82,10 @@ class Check(ExtendedModel):
     service_id = db.Column(db.Integer, db.ForeignKey("service.id"))
     datetime = db.Column(db.String, nullable=False)
     result = db.Column(db.String) # JSON with status, code and response_time
+
+    @classmethod
+    def get_result(cls):
+        return json.loads(cls.result)
 
 
 class Incident(ExtendedModel):
