@@ -1,6 +1,7 @@
 import requests
 import icmplib
 from enum import Enum
+import re
 
 
 def check_service_http(address):
@@ -11,7 +12,7 @@ def check_service_http(address):
     result = {
         "status": None,
         "code": None,
-        "response_time": None
+        "responseTime": None
     }
 
     try:
@@ -27,7 +28,7 @@ def check_service_http(address):
     
     result["status"] = "ok"
     result["code"] = response.status_code
-    result["response_time"] = str(response.elapsed)
+    result["responseTime"] = str(response.elapsed)
     return result
 
 
@@ -38,7 +39,7 @@ def check_service_icmp(address):
     response = None
     result = {
         "status": None,
-        "response_time": None
+        "responseTime": None
     }
 
     try:
@@ -48,7 +49,7 @@ def check_service_icmp(address):
         return result
 
     result["status"] = "ok"
-    result["response_time"] = response.avg_rtt
+    result["responseTime"] = response.avg_rtt
     return result
 
 
@@ -72,5 +73,29 @@ def serialize_all(objs):
     return [serialize(obj) for obj in objs]
 
 
-def convert_dict_notation(data): # convert json notation to python
-    return { key.replace("-", "_"): data[key] for key in data}
+def from_json(data): # convert json notation to python
+    if isinstance(data, list):
+        return [from_json(item) for item in data]
+    
+    if isinstance(data, dict):
+        return { camel2snake(key): from_json(data[key]) for key in data}
+    
+    return data
+
+
+def to_json(data): # convert python notation to json
+    if isinstance(data, list):
+        return [to_json(item) for item in data]
+
+    if isinstance(data, dict):
+        return { snake2camel(key): to_json(data[key]) for key in data}
+
+    return data
+
+
+def camel2snake(value): # convert notation from camelCase to snake_case
+    return re.sub(r'([a-z0-9])([A-Z])', r'\1_\2', value).lower()
+
+
+def snake2camel(value): # convert notation from snake_case to camelCase
+    return re.sub(r'_([a-z])', lambda x: x.group(1).upper(), value)

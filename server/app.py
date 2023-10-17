@@ -3,7 +3,7 @@ from flask_jwt_extended import JWTManager, create_access_token, unset_jwt_cookie
     jwt_required, set_access_cookies, verify_jwt_in_request,\
     get_jwt_identity, create_refresh_token, set_refresh_cookies, unset_access_cookies
 from werkzeug.security import generate_password_hash, check_password_hash
-from utils import serialize, serialize_all, convert_dict_notation
+from utils import serialize, serialize_all, from_json, to_json
 from flask_cors import CORS
 import atexit
 
@@ -38,11 +38,11 @@ def api_protected():
 def api_services():
     if request.method == "GET":
         services = db.session.query(Service).all()
-        return jsonify(serialize_all(services))
+        return jsonify(to_json(serialize_all(services)))
     
     verify_jwt_in_request()
     data = request.get_json()
-    check_method = CheckMethod.get(data["check-method"])
+    check_method = CheckMethod.get(data["checkMethod"])
 
     if check_method is None:
         return jsonify({ "msg": "no such check method"}), 400
@@ -52,7 +52,7 @@ def api_services():
             name=data["name"],
             address=data["address"],
             check_method=check_method,
-            check_interval=data["check-interval"],
+            check_interval=data["checkInterval"],
             monitoring_status=True
         )
         db.session.add(service)
@@ -73,14 +73,14 @@ def api_services_id(id):
         return jsonify({ "msg": "no service with such id" }), 400
         
     if request.method == "GET":
-        return jsonify(serialize(service))
+        return jsonify(to_json(serialize(service)))
     
     verify_jwt_in_request()
     data = request.get_json()
     
     if request.method == "PUT":
         try:
-            service_query_filter.update(convert_dict_notation(data))
+            service_query_filter.update(from_json(data))
             db.session.commit()
             service_monitor.update(service_query_filter.first())
         except Exception as e:
@@ -122,7 +122,7 @@ def api_incidents_service_id():
         return jsonify({ "msg": "no service-id url argument" }), 400
     
     incidents = db.session.query(Incident).filter_by(service_id=service_id).all()
-    return jsonify(serialize_all(incidents))
+    return jsonify(to_json(serialize_all(incidents)))
 
 
 @app.route("/api/checks") # service-id parameter is necessary
