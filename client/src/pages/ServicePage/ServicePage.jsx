@@ -6,8 +6,9 @@ import Typography from "@mui/material/Typography";
 import DataSection from "@components/DataSection";
 import DataStack from "@components/DataStack";
 import IncidentList from "@components/IncidentList";
-import { incidents, overallUptime } from "@helpers/placeholders.jsx";
-import { parseInterval } from "@helpers/utils.jsx";
+import UptimeChart from "@components/UptimeChart";
+import { incidents, overallUptime, uptimeData } from "@helpers/placeholders.jsx";
+import { parseInterval, calculateOverallUptime } from "@helpers/utils.jsx";
 
 function getPageSubtitle(checkInterval, checkMethod) {
     let [intervalMinutes, intervalSeconds] = parseInterval(checkInterval);
@@ -52,18 +53,32 @@ export default function ServicePage() {
                 </Await>
             </Suspense>
             <DataSection title="Uptime" details="60 days">
-                <Suspense fallback={<Skeleton />}>
-                    <Await resolve={loaderData.service}>
-                        {(service) => (
-                            <Typography>
-                                Uptime chart here
-                            </Typography>
+                <Suspense fallback={<Skeleton height={10} />}>
+                    <Await resolve={loaderData.uptimeData}>
+                        {(uptimeData) => (
+                            // <Typography
+                            //     fontSize={'1.2rem'}
+                            //     marginBottom={1}
+                            // >
+                            //     {'Average: '}
+                            //     <span style={{color: '#00d200', fontWeight: 500}}>
+                            //         {overallUptime[3].value}
+                            //     </span>
+                            // </Typography>
+                            <UptimeChart uptimeData={uptimeData} />
                         )}
                     </Await>
                 </Suspense>
             </DataSection>
             <DataSection title="Overall uptime">
-                <DataStack dataItems={overallUptime} />
+                <Suspense fallback={<Skeleton />}>
+                    <Await resolve={loaderData.uptimeData}>
+                        {(uptimeData) => (
+                            <DataStack dataItems={calculateOverallUptime(uptimeData)} />
+                            // <DataStack dataItems={overallUptime} />
+                        )}
+                    </Await>
+                </Suspense>
             </DataSection>
             <DataSection title="Recent incidents">
                 <IncidentList incidents={incidents} />
