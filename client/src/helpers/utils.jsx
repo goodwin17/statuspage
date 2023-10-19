@@ -28,7 +28,29 @@ const getCookie = (name) => {
     return cookieValue;
 }
 
+function calculateOverallUptime(uptimeData) {
+    let last7Days = uptimeData.slice(-7).reduce((sum, el) => sum + el.value, 0) / 7;
+    let last30Days = uptimeData.slice(-30).reduce((sum, el) => sum + el.value, 0) / 30;
+    let last60Days = uptimeData.reduce((sum, el) => sum + el.value, 0) / 60;
+    let items = [{
+        capture: 'Last 24 hours',
+        value: uptimeData[0].value
+    }, {
+        capture: 'Last 7 days',
+        value: last7Days
+    }, {
+        capture: 'Last 30 days',
+        value: last30Days
+    }, {
+        capture: 'Last 60 days',
+        value: last60Days
+    }];
+
+    return items;
+}
+
 export {
     parseInterval,
-    getCookie
+    getCookie,
+    calculateOverallUptime
 };
