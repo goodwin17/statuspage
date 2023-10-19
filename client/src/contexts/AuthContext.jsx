@@ -10,13 +10,15 @@ async function login(credentials) {
     console.log("logging in user...");
     let response = await axios.post("/login", credentials, {
         withCredentials: true
-    }).catch(error => console.log(error));
+    }).catch(error => {console.log(error); return error});
     
-    if (!response) {
+    if (response?.status !== 200) {
         console.log("something went wrong");
         return false;
     }
     
+    console.log(response);
+
     isAuth = true;
     user = response.data;
     console.log("user logged in");
