@@ -13,6 +13,7 @@ export default function DataStack({ dataItems }) {
         <Stack
             spacing={5}
             direction={'row'}
+            flexWrap={'wrap'}
             divider={
                 <Divider
                     orientation="vertical"
