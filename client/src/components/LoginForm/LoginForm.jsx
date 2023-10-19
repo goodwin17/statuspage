@@ -11,8 +11,8 @@ export default function LoginForm() {
         event.preventDefault();
         const formData = new FormData(event.currentTarget);
         const credentials = {
-            'login': formData.get('login'),
-            'password': formData.get('password')
+            login: formData.get('login'),
+            password: formData.get('password')
         };
         const loginSuccess = login(credentials);
         console.log(loginSuccess);
