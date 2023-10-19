@@ -56,16 +56,18 @@ export default function ServicePage() {
                 <Suspense fallback={<Skeleton height={10} />}>
                     <Await resolve={loaderData.uptimeData}>
                         {(uptimeData) => (
-                            // <Typography
-                            //     fontSize={'1.2rem'}
-                            //     marginBottom={1}
-                            // >
-                            //     {'Average: '}
-                            //     <span style={{color: '#00d200', fontWeight: 500}}>
-                            //         {overallUptime[3].value}
-                            //     </span>
-                            // </Typography>
-                            <UptimeChart uptimeData={uptimeData} />
+                            <>
+                                <Typography
+                                    fontSize={'1.2rem'}
+                                    marginBottom={1}
+                                >
+                                    {'Average: '}
+                                    <span style={{color: '#00d200', fontWeight: 500}}>
+                                        {overallUptime[3].value}
+                                    </span>
+                                </Typography>
+                                <UptimeChart uptimeData={uptimeData} />
+                            </>
                         )}
                     </Await>
                 </Suspense>
@@ -75,13 +77,19 @@ export default function ServicePage() {
                     <Await resolve={loaderData.uptimeData}>
                         {(uptimeData) => (
                             <DataStack dataItems={calculateOverallUptime(uptimeData)} />
-                            // <DataStack dataItems={overallUptime} />
                         )}
                     </Await>
                 </Suspense>
             </DataSection>
             <DataSection title="Recent incidents">
                 <IncidentList incidents={incidents} />
+                <Suspense fallback={<Skeleton />}>
+                    <Await resolve={loaderData.incidents}>
+                        {(incidents) => (
+                            <IncidentList incidents={incidents} />
+                        )}
+                    </Await>
+                </Suspense>
             </DataSection>
         </>
     );
