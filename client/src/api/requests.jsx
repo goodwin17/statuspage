@@ -27,28 +27,28 @@ async function getIncidents(serviceId) {
 }
 
 async function getUptime(serviceId) {
-    console.log("getUptimeData start");
+    console.log("getUptime start");
     let response = await axios.get(`/service/${serviceId}/uptime?days=60`).catch(error => console.log(error));
 
     if (response?.status !== 200) {
-        console.log("getUptimeData went wrong");
+        console.log("getUptime went wrong");
         return null;
     }
     
-    console.log("getUptimeData ok");
+    console.log("getUptime ok");
     return response.data;
 }
 
 async function getResponseTime(serviceId) {
-    console.log("getResponseTimeData start");
+    console.log("getResponseTime start");
     let response = await axios.get(`/service/${serviceId}/response-time?days=60`).catch(error => console.log(error));
 
     if (response?.status !== 200) {
-        console.log("getResponseTimeData went wrong");
+        console.log("getResponseTime went wrong");
         return null;
     }
     
-    console.log("getResponseTimeData ok");
+    console.log("getResponseTime ok");
     return response.data;
 }
 
