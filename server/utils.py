@@ -2,6 +2,40 @@ import requests
 import icmplib
 from enum import Enum
 import re
+import datetime
+
+def get_response_time(check_model, check_query, now, period):
+    interval = datetime.timedelta(hours=4)
+    radius = datetime.timedelta(minutes=15)
+    result = []
+    
+    while now >= period:
+        upper_bound = now + radius
+        lower_bound = now - radius
+        current_checks = check_query.filter(check_model.datetime < upper_bound).filter(check_model.datetime > lower_bound).all()
+        point = {
+            "datetime": now,
+            "value": get_average_response_time(current_checks)
+        }
+        result.append(point)
+        now -= interval
+    
+    return result
+
+
+def get_average_response_time(checks):
+    if len(checks) == 0:
+        return 0
+
+    sum_ = 0
+    print("testing")
+    print(checks)
+    print(type(checks))
+
+    for check in checks:
+        sum_ += check.get_result()["responseTime"]
+    
+    return sum_ / len(checks)
 
 
 def check_service_http(address):
@@ -61,7 +95,6 @@ def serialize(obj):
         col_value = getattr(obj, col.name)
         
         if isinstance(col_value, Enum):
-            print(col_value.value)
             col_value = col_value.value
         
         result[col_name] = col_value
