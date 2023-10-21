@@ -7,7 +7,7 @@ import DataSection from "@components/DataSection";
 import DataStack from "@components/DataStack";
 import IncidentList from "@components/IncidentList";
 import UptimeChart from "@components/UptimeChart";
-import { incidents, overallUptime, uptimeData } from "@helpers/placeholders.jsx";
+import ResponseTimeChart from "@components/ResponseTimeChart";
 import { parseInterval, calculateOverallUptime } from "@helpers/utils.jsx";
 
 function getPageSubtitle(checkInterval, checkMethod) {
@@ -62,9 +62,13 @@ export default function ServicePage() {
                                     marginBottom={1}
                                 >
                                     {'Average: '}
-                                    <span style={{color: '#00d200', fontWeight: 500}}>
-                                        {overallUptime[3].value}
-                                    </span>
+                                    {uptimeData[0] ? (
+                                        <span style={{color: '#00d200', fontWeight: 500}}>
+                                            {uptimeData[0].value}
+                                        </span>
+                                    ) : (
+                                        <span>Not enough data</span>
+                                    )}
                                 </Typography>
                                 <UptimeChart uptimeData={uptimeData} />
                             </>
@@ -81,8 +85,16 @@ export default function ServicePage() {
                     </Await>
                 </Suspense>
             </DataSection>
+            <DataSection title="Response Time">
+                <Suspense fallback={<Skeleton />}>
+                    <Await resolve={loaderData.responseTimeData}>
+                        {(responseTimeData) => (
+                            <ResponseTimeChart data={responseTimeData} />
+                        )}
+                    </Await>
+                </Suspense>
+            </DataSection>
             <DataSection title="Recent incidents">
-                <IncidentList incidents={incidents} />
                 <Suspense fallback={<Skeleton />}>
                     <Await resolve={loaderData.incidents}>
                         {(incidents) => (
