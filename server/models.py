@@ -83,9 +83,8 @@ class Check(ExtendedModel):
     datetime = db.Column(db.String, nullable=False)
     result = db.Column(db.String) # JSON with status, code and response_time
 
-    @classmethod
-    def get_result(cls):
-        return json.loads(cls.result)
+    def get_result(self):
+        return json.loads(self.result)
 
 
 class Incident(ExtendedModel):
