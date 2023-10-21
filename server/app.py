@@ -3,8 +3,9 @@ from flask_jwt_extended import JWTManager, create_access_token, unset_jwt_cookie
     jwt_required, set_access_cookies, verify_jwt_in_request,\
     get_jwt_identity, create_refresh_token, set_refresh_cookies, unset_access_cookies
 from werkzeug.security import generate_password_hash, check_password_hash
-from utils import serialize, serialize_all, from_json, to_json
+from utils import serialize, serialize_all, from_json, to_json, get_response_time
 from flask_cors import CORS
+from datetime import datetime, timedelta
 import atexit
 
 app = Flask(__name__)
@@ -13,9 +14,11 @@ jwt = JWTManager(app)
 CORS(app)
 
 from monitor import Monitor
-from models import db, User, Service, Incident, UserRole, CheckMethod
+from models import db, User, Service, Incident, UserRole, CheckMethod, DailyUptime, Check
+from daily_uptime_scheduler import daily_uptime_scheduler
 
 service_monitor = Monitor()
+daily_uptime_scheduler.start()
 
 
 @app.route("/")
@@ -97,6 +100,51 @@ def api_services_id(id):
     return jsonify({ "msg": "service deleted" })
 
 
+@app.route("/api/services/<id>/uptime", methods=["GET"]) # days parameter is necessary
+def api_services_id_uptime(id):
+    days = request.args.get("days")
+
+    if days is None:
+        return jsonify({ "msg": "no 'days' url parameter" })
+    
+    period = (datetime.today() - timedelta(days=int(days))).date()
+    daily_uptime = None
+
+    try:
+        daily_uptime = db.session.query(DailyUptime)\
+            .filter(DailyUptime.service_id == id)\
+            .filter(DailyUptime.date > period).all()
+    except:
+        return jsonify({ "msg": "can not get uptime data"})
+    
+    response_data = [{"date": day.date, "value": day.value} for day in daily_uptime]
+
+    return jsonify(response_data)
+
+
+@app.route("/api/services/<id>/response-time", methods=["GET"]) # days parameter is necessary
+def api_services_id_response_time(id):
+    days = request.args.get("days")
+
+    if days is None:
+        return jsonify({ "msg": "no 'days' url parameter" })
+    
+    now = datetime.now()
+    period = now - timedelta(days=int(days))
+    check_query = db.session.query(Check)\
+        .filter(Check.service_id == id)\
+        .filter(Check.datetime >= period)
+    response_time_data = None
+
+    try:
+        response_time_data = get_response_time(Check, check_query, now, period)
+    except Exception as e:
+        print(e)
+        return jsonify({ "msg": "can not get response time"}), 500
+    
+    return jsonify(response_time_data)
+
+
 @app.route("/api/services/<id>/change-status", methods=["POST"])
 @jwt_required()
 def api_services_id_change_status(id):
@@ -119,7 +167,7 @@ def api_incidents_service_id():
     service_id = request.args.get("service-id")
 
     if service_id is None:
-        return jsonify({ "msg": "no service-id url argument" }), 400
+        return jsonify({ "msg": "no 'service-id' url parameter" }), 400
     
     incidents = db.session.query(Incident).filter_by(service_id=service_id).all()
     return jsonify(to_json(serialize_all(incidents)))
