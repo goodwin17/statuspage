@@ -40,15 +40,17 @@ class ExtendedEnum(Enum):
     
     @classmethod
     def get(cls, value):
-        if cls.has_value(value):
-            return cls(value).name
-        
-        return None
+        return cls(value).name if cls.has_value(value) else None
 
 
 class UserRole(ExtendedEnum):
     ADMIN = "admin"
     SUPERADMIN = "superadmin"
+
+
+class UserStatus(ExtendedEnum):
+    ACTIVE = "active"
+    INACTIVE = "inactive"
 
 
 class CheckMethod(ExtendedEnum):
@@ -66,6 +68,7 @@ class User(ExtendedModel):
     login = db.Column(db.String, unique=True, nullable=False)
     password_hash = db.Column(db.String, nullable=False)
     role = db.Column(db.Enum(UserRole), nullable=False)
+    status = db.Column(db.Enum(UserStatus), nullable=False, default=UserStatus.ACTIVE)
 
 
 class Service(ExtendedModel):
@@ -81,7 +84,7 @@ class Service(ExtendedModel):
 class Check(ExtendedModel):
     service_id = db.Column(db.Integer, db.ForeignKey("service.id"))
     datetime = db.Column(db.String, nullable=False)
-    result = db.Column(db.String) # JSON with status, code and response_time
+    result = db.Column(db.String) # JSON with status, code and response time
 
     def get_result(self):
         return json.loads(self.result)

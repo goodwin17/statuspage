@@ -77,7 +77,6 @@ class Monitor:
         
         result = None
         method_func = None
-        # current_time = str(datetime.now())
         current_time = datetime.now()
 
         if service.check_method == CheckMethod("http").name:
@@ -86,10 +85,6 @@ class Monitor:
             method_func = check_service_icmp
         
         result = method_func(service.address)
-
-        # if result["status"] == "error": # either "ok" or "error"
-        #     return None
-        
         check = Check(
             service_id=service.id,
             datetime=current_time,
