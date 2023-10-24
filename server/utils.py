@@ -3,6 +3,7 @@ import icmplib
 from enum import Enum
 import re
 import datetime
+import json
 
 def get_response_time(check_model, check_query, now, period):
     interval = datetime.timedelta(hours=4)
@@ -87,23 +88,24 @@ def check_service_icmp(address):
     return result
 
 
-def serialize(obj):
+def deserialize(obj):
+    if isinstance(obj, list):
+        return [deserialize(item) for item in obj]
+    
     result = {}
 
     for col in obj.__table__.columns:
-        col_name = col.name
         col_value = getattr(obj, col.name)
+
+        if col.name in ['details', 'result'] and not isinstance(col_value, Enum):
+            col_value = json.loads(col_value)
         
         if isinstance(col_value, Enum):
             col_value = col_value.value
         
-        result[col_name] = col_value
+        result[col.name] = col_value
     
     return result
-
-
-def serialize_all(objs):
-    return [serialize(obj) for obj in objs]
 
 
 def from_json(data): # convert json notation to python

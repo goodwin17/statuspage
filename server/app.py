@@ -3,7 +3,7 @@ from flask_jwt_extended import JWTManager, create_access_token, unset_jwt_cookie
     jwt_required, set_access_cookies, verify_jwt_in_request,\
     get_jwt_identity, create_refresh_token, set_refresh_cookies, unset_access_cookies
 from werkzeug.security import generate_password_hash, check_password_hash
-from utils import serialize, serialize_all, from_json, to_json, get_response_time
+from utils import deserialize, from_json, to_json, get_response_time
 from flask_cors import CORS
 from datetime import datetime, timedelta
 import atexit
@@ -41,7 +41,7 @@ def api_protected():
 def api_services():
     if request.method == "GET":
         services = db.session.query(Service).all()
-        return jsonify(to_json(serialize_all(services)))
+        return jsonify(to_json(deserialize(services)))
     
     verify_jwt_in_request()
     data = request.get_json()
@@ -76,7 +76,7 @@ def api_services_id(id):
         return jsonify({ "msg": "no service with such id" }), 400
         
     if request.method == "GET":
-        return jsonify(to_json(serialize(service)))
+        return jsonify(to_json(deserialize(service)))
     
     verify_jwt_in_request()
     data = request.get_json()
@@ -170,12 +170,7 @@ def api_incidents_service_id():
         return jsonify({ "msg": "no 'service-id' url parameter" }), 400
     
     incidents = db.session.query(Incident).filter_by(service_id=service_id).all()
-    return jsonify(to_json(serialize_all(incidents)))
-
-
-@app.route("/api/checks") # service-id parameter is necessary
-def api_checks_service_id():
-    return "Checks here"
+    return jsonify(to_json(deserialize(incidents)))
 
 
 @app.route("/api/login", methods=["POST"])
@@ -191,7 +186,9 @@ def api_login():
     
     access_token = create_access_token(user.login)
     refresh_token = create_refresh_token(user.login)
-    response = make_response({ "msg": "successfully logged in" })
+    deserialized_user = deserialize(user)
+    del deserialized_user['password_hash']
+    response = make_response(deserialized_user)
     set_access_cookies(response, access_token)
     set_refresh_cookies(response, refresh_token)
     return response
