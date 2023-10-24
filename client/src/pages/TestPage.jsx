@@ -4,7 +4,7 @@ import UptimeChart from "@components/UptimeChart";
 import { useState } from "react";
 import Typography from "@mui/material/Typography";
 import { uptimeData } from "@helpers/placeholders";
-import ResponseTimeChart from "@components/ResponseTimeChart/ResponseTimeChart";
+import ResponseTimeChart from "@components/ResponseTimeChart";
 
 export default function TestPage() {
     let [uptimeDays, setUptimeDays] = useState(uptimeData);
