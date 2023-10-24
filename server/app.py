@@ -247,6 +247,16 @@ def api_refresh():
 if __name__ == "__main__":
     with app.app_context():
         db.create_all() # create tables if some do not exist
+        
+        if not db.session.query(User).filter_by(login=app.config["AUTH_LOGIN"]).one_or_none():
+            superadmin = User(
+                name="Main Admin",
+                login=app.config["AUTH_LOGIN"],
+                password_hash=generate_password_hash(app.config["AUTH_PASSWORD"], salt_length=64),
+                role=UserRole.SUPERADMIN
+            )
+            db.session.add(superadmin)
+            db.session.commit()
 
     service_monitor.run()
     atexit.register(lambda: service_monitor.shutdown(wait=False))
