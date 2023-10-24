@@ -1,8 +1,10 @@
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import TextField from "@mui/material/TextField";
-import Button from "@mui/material/Button";
+import Button from "@components/Button";
 import useAuth from "@hooks/useAuth";
+// import { useNavigate } from "react-router-dom";
+// import Button from "@mui/material/Button";
 
 export default function LoginForm() {
     let { login } = useAuth();
@@ -54,7 +56,9 @@ export default function LoginForm() {
             <Button
                 type="submit"
                 variant="contained"
-                sx={{padding: 1}}
+                sx={{
+                    fontSize: '1.1rem'
+                }}
             >
                 Submit
             </Button>
