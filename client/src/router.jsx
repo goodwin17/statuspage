@@ -23,6 +23,9 @@ const router = createBrowserRouter([{
         path: "admin",
         element: <AdminPage />
     }, {
+        path: "admin/account",
+        element: <AdminAccountPage />
+    }, {
         path: "test",
         element: <TestPage />
     }]
