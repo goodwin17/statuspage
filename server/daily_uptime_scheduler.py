@@ -6,7 +6,7 @@ daily_uptime_scheduler = APScheduler()
 
 
 def get_daily_uptimes():
-    yesterday = datetime.datetime.now() - datetime.timedelta(days=1)
+    yesterday = datetime.datetime.now() - datetime.timedelta(hours=24)
     services = db.session.query(Service).all()
     daily_checks_query = db.session.query(Check).filter(Check.datetime > yesterday)
     uptimes = {}
@@ -36,4 +36,4 @@ def register_daily_uptime():
             print("can not register daily uptime")
 
 
-daily_uptime_scheduler.add_job(1, register_daily_uptime, trigger="cron", hour="0", minute="0")
+daily_uptime_scheduler.add_job('1', register_daily_uptime, trigger="cron", hour="0", minute="0")

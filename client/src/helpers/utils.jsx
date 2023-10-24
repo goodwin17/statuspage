@@ -34,7 +34,7 @@ function calculateOverallUptime(uptimeData) {
     let last60Days = uptimeData.reduce((sum, el) => sum + el.value, 0) / 60;
     let items = [{
         capture: 'Last 24 hours',
-        value: uptimeData[0].value
+        value: uptimeData[0]?.value ?? 0
     }, {
         capture: 'Last 7 days',
         value: last7Days

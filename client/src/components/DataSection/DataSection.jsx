@@ -2,33 +2,35 @@ import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
 
-export default function DataSection({ title, details=null, children }) {
+export default function DataSection({ title, details, children }) {
     return (
         <Box
             component='section'
             sx={{ margin: '2rem 0' }}
         >
-            <Box
-                marginBottom={2}
-                sx={{
-                    display: 'flex',
-                    flexDirection: 'row',
-                    alignItems: 'center'
-                }}
-            >
-                <Typography
-                    variant="h2"
+            {title && (
+                <Box
+                    marginBottom={2}
+                    sx={{
+                        display: 'flex',
+                        flexDirection: 'row',
+                        alignItems: 'center'
+                    }}
                 >
-                    {title}
-                </Typography>
-                {details && (
                     <Typography
-                        marginLeft="1rem"
+                        variant="h2"
                     >
-                        {details}
+                        {title}
                     </Typography>
-                )}
-            </Box>
+                    {details && (
+                        <Typography
+                            marginLeft="1rem"
+                        >
+                            {details}
+                        </Typography>
+                    )}
+                </Box>
+            )}
             <Paper
                 elevation={4}
                 sx={{
