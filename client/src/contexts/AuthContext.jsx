@@ -23,6 +23,7 @@ function AuthProvider({ children }) {
         setIsAuth(true);
         setUser(response.data);
         console.log("user logged in");
+        setTimeout(() => window.location.reload(), 100);
         return true;
     }
     
@@ -34,6 +35,7 @@ function AuthProvider({ children }) {
         setUser(null);
         setIsAuth(false);
         console.log("user logged out");
+        setTimeout(() => window.location.reload(), 100);
     }
     
     return (
