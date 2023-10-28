@@ -49,8 +49,18 @@ function calculateOverallUptime(uptimeData) {
     return items;
 }
 
+async function sleep(ms) {
+    return await new Promise(r => setTimeout(r, ms));
+}
+
+async function isObject(value) {
+    return (typeof value === 'object' && !Array.isArray(value) && value !== null);
+}
+
 export {
     parseInterval,
     getCookie,
-    calculateOverallUptime
+    calculateOverallUptime,
+    sleep,
+    isObject
 };
