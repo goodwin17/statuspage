@@ -1,99 +1,54 @@
 import axios from "@api/axios.jsx";
 
-async function getService(serviceId) {
-    console.log("getService start");
-    let response = await axios.get(`/services/${serviceId}`).catch(error => console.log(error));
+async function sendData(funcName, type, path, data) {
+    console.log(`${funcName} start`);
+    let response = null;
+
+    if (type === 'get') {
+        response = await axios.get(path).catch(error => console.log(error));
+    } else if (type === 'post') {
+        response = await axios.post(path, data).catch(error => console.log(error));
+    } else {
+        console.log(`${funcName} wrong type`);
+        return null;
+    }
 
     if (response?.status !== 200) {
-        console.log("getService went wrong");
+        console.log(`${funcName} error`);
         return null;
     }
     
-    console.log("getService ok");
+    console.log(`${funcName} ok`);
     return response.data;
 }
 
-async function getIncidents(serviceId) {
-    console.log("getIncidents start");
-    let response = await axios.get(`/incidents?service-id=${serviceId}`).catch(error => console.log(error));
-
-    if (response?.status !== 200) {
-        console.log("getIncidents went wrong");
-        return null;
-    }
-    
-    console.log("getIncidents ok");
-    return response.data;
+async function getData(funcName, path) {
+    return await sendData(funcName, 'get', path);
 }
 
-async function getUptime(serviceId) {
-    console.log("getUptime start");
-    let response = await axios.get(`/services/${serviceId}/uptime?days=60`).catch(error => console.log(error));
-
-    if (response?.status !== 200) {
-        console.log("getUptime went wrong");
-        return null;
-    }
-    
-    console.log("getUptime ok");
-    return response.data;
+async function postData(funcName, path, data) {
+    return await sendData(funcName, 'post', path, data);
 }
 
-async function getResponseTime(serviceId) {
-    console.log("getResponseTime start");
-    let response = await axios.get(`/services/${serviceId}/response-time?days=60`).catch(error => console.log(error));
+const createService = async (service) => await postData('createService', '/services', service);
 
-    if (response?.status !== 200) {
-        console.log("getResponseTime went wrong");
-        return null;
-    }
-    
-    console.log("getResponseTime ok");
-    return response.data;
-}
+const createUser = async (user) => await postData('createUser', '/register', user);
 
-async function createService(service) {
-    let { name, address, checkMethod, checkInterval } = service;
-    console.log("createService start");
-    let response = await axios.post("/services", {
-        "name": name,
-        "address": address,
-        "check-method": checkMethod,
-        "check-interval": checkInterval
-    }).catch(error => console.log(error));
+const getService = async (serviceId) => await getData('getService', `/services/${serviceId}`);
 
-    if (response.status !== 200) {
-        console.log("createService went wrong");
-        return false;
-    }
-    
-    console.log("createService ok");
-    return true;
-}
+const getServices = async () => await getData('getServices', '/services');
 
-async function createUser(user) {
-    let { name, login, password, role } = user;
-    console.log("createUser start");
-    let response = await axios.post("/register", {
-        "name": name,
-        "login": login,
-        "password": password,
-        "role": role
-    }).catch(error => console.log(error));
-    
-    if (response?.status !== 200) {
-        console.log("createUser went wrong");
-        return false;
-    }
-    
-    console.log("createUser ok");
-    return true;
-}
+const getIncidents = async (serviceId) => await getData('getIncidents', `/incidents?service-id=${serviceId}`);
+
+const getUptime = async (serviceId) => await getData('getUptime', `/services/${serviceId}/uptime?days=60`);
+
+const getResponseTime = async (serviceId) => await getData('getResponseTime', `/services/${serviceId}/response-time?days=60`);
 
 export {
     createUser,
     createService,
     getService,
+    getServices,
     getIncidents,
     getUptime,
     getResponseTime
