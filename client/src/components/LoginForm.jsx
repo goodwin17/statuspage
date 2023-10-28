@@ -37,7 +37,7 @@ export default function LoginForm() {
                 variant="h2"
                 align="center"
             >
-                Login form
+                Log in as admin
             </Typography>
             <TextField
                 id="login"

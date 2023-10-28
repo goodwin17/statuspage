@@ -6,6 +6,8 @@ import { Paper, Modal } from "@mui/material";
 import LoginForm from "@components/LoginForm";
 import { useState } from "react";
 import useAuth from "@hooks/useAuth";
+import CloseIcon from '@mui/icons-material/Close';
+import { IconButton } from "@mui/material";
 
 export default function Header() {
     const [isOpenModal, setIsOpenModal] = useState(false);
@@ -51,7 +53,7 @@ export default function Header() {
                                     fontSize: "1rem"
                                 }}
                             >
-                                Logout
+                                Log out
                             </Button>
                         </>
                     ) : (
@@ -63,7 +65,7 @@ export default function Header() {
                                     fontSize: "1rem"
                                 }}
                             >
-                                Login
+                                Log in
                             </Button>
                             <Modal
                                 open={isOpenModal}
@@ -81,6 +83,13 @@ export default function Header() {
                                     borderRadius: 2
                                 }}>
                                     <LoginForm />
+                                    <IconButton onClick={handleCloseModal} sx={{
+                                        position: 'absolute',
+                                        top: '0.5rem',
+                                        right: '0.5rem'
+                                    }}>
+                                        <CloseIcon />
+                                    </IconButton>
                                 </Paper>
                             </Modal>
                         </>
