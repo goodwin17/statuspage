@@ -2,18 +2,12 @@ import AppBar from "@mui/material/AppBar";
 import Container from "@mui/material/Container";
 import Toolbar from "@mui/material/Toolbar";
 import Button from "@components/Button";
-import { Paper, Modal } from "@mui/material";
-import LoginForm from "@components/LoginForm";
-import { useState } from "react";
 import useAuth from "@hooks/useAuth";
-import CloseIcon from '@mui/icons-material/Close';
-import { IconButton } from "@mui/material";
+import useModal from "@hooks/useModal";
 
 export default function Header() {
-    const [isOpenModal, setIsOpenModal] = useState(false);
-    const handleOpenModal = () => setIsOpenModal(true);
-    const handleCloseModal = () => setIsOpenModal(false);
     let { isAuth, logout } = useAuth();
+    const { openModal } = useModal();
 
     return (
         <AppBar position="static">
@@ -59,7 +53,7 @@ export default function Header() {
                     ) : (
                         <>
                             <Button
-                                onClick={handleOpenModal}
+                                onClick={openModal}
                                 sx={{
                                     color: "white",
                                     fontSize: "1rem"
@@ -67,31 +61,6 @@ export default function Header() {
                             >
                                 Log in
                             </Button>
-                            <Modal
-                                open={isOpenModal}
-                                onClose={handleCloseModal}
-                            >
-                                <Paper sx={{
-                                    position: 'absolute',
-                                    top: '50%',
-                                    left: '50%',
-                                    transform: 'translate(-50%, -50%)',
-                                    paddingTop: 4,
-                                    paddingBottom: 4,
-                                    paddingLeft: 2,
-                                    paddingRight: 2,
-                                    borderRadius: 2
-                                }}>
-                                    <LoginForm />
-                                    <IconButton onClick={handleCloseModal} sx={{
-                                        position: 'absolute',
-                                        top: '0.5rem',
-                                        right: '0.5rem'
-                                    }}>
-                                        <CloseIcon />
-                                    </IconButton>
-                                </Paper>
-                            </Modal>
                         </>
                     )}
                 </Toolbar>
