@@ -47,9 +47,9 @@ const createService = async (service) => await postData('/services', service);
 
 const createUser = async (user) => await postData('/register', user);
 
-const getService = async (serviceId) => await getData('getService', `/services/${serviceId}`);
+const editUser = async (userLogin, data) => await putData(`/users/${userLogin}`, data);
 
-const getServices = async () => await getData('getServices', '/services');
+const getAdmins = async () => await getData('/users?role=admin');
 
 const getIncidents = async (serviceId) => await getData(`/incidents?service-id=${serviceId}`);
 
@@ -64,6 +64,8 @@ const getUptime = async (serviceId) => await getData(`/services/${serviceId}/upt
 export {
     createUser,
     createService,
+    editUser,
+    getAdmins,
     getService,
     getServices,
     getIncidents,
