@@ -6,6 +6,8 @@ import { Typography, Stack } from "@mui/material";
 import { useState, useEffect } from "react";
 import { getServices } from "@api/requests";
 import Loaded from "@components/Loaded";
+import Link from "@components/Link";
+import { getCheckDescription } from "@helpers/utils";
 
 export default function AdminPage() {
     let [services, setServices] = useState(null);
@@ -26,10 +28,18 @@ export default function AdminPage() {
                 <Loaded resolve={services}>
                     {services => (
                         <Stack>
-                            {services.map((service, i) => (
+                            {services.map(service => (
                                 <Box key={service.id}>
-                                    <Typography>{service.name} • {service.address}</Typography>
-                                    <Typography>Checked every _ by _ method</Typography>
+                                    <Typography>
+                                        <Link href={`/services/${service.id}`}>
+                                            {service.name}
+                                        </Link>
+                                        {' • '}
+                                        {service.address}
+                                    </Typography>
+                                    <Typography>
+                                        {getCheckDescription(service.checkInterval, service.checkMethod)}
+                                    </Typography>
                                 </Box>
                             ))}
                         </Stack>

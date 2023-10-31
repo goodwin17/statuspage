@@ -8,34 +8,7 @@ import DataStack from "@components/DataStack";
 import IncidentList from "@components/IncidentList";
 import UptimeChart from "@components/UptimeChart";
 import ResponseTimeChart from "@components/ResponseTimeChart";
-import { parseInterval, calculateOverallUptime } from "@helpers/utils.jsx";
-
-function getPageSubtitle(checkInterval, checkMethod) {
-    let [intervalMinutes, intervalSeconds] = parseInterval(checkInterval);
-    let subtitleString = `Being checked every `;
-    
-    if (intervalMinutes) {
-        let s = intervalMinutes > 1 ? 's' : '';
-        subtitleString += `${intervalMinutes} minute${s}`;
-
-        if (intervalSeconds) {
-            subtitleString += ' and ';
-        }
-    }
-    
-    if (intervalSeconds) {
-        let s = intervalSeconds > 1 ? 's' : '';
-        subtitleString += `${intervalSeconds} second${s}`;
-    }
-
-    let subtitle = (
-        <Typography>
-            {subtitleString} by <strong>{checkMethod.toUpperCase()}</strong> method
-        </Typography>
-    );
-
-    return subtitle;
-}
+import { calculateOverallUptime, getCheckDescription } from "@helpers/utils.jsx";
 
 export default function ServicePage() {
     let loaderData = useLoaderData();
@@ -47,7 +20,11 @@ export default function ServicePage() {
                     {(service) => (
                         <PageTitle
                             title={`${service.name} is operational`}
-                            subtitle={getPageSubtitle(service.checkInterval, service.checkMethod)}
+                            subtitle={
+                                <Typography>
+                                    {getCheckDescription(service.checkInterval, service.checkMethod)}
+                                </Typography>
+                            }
                         />
                     )}
                 </Await>

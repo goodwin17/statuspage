@@ -61,11 +61,33 @@ function hasProp(obj, prop) {
     return Object.prototype.hasOwnProperty.call(obj, prop);
 }
 
+function getCheckDescription(checkInterval, checkMethod) {
+    const [seconds, minutes] = parseInterval(checkInterval);
+    let intervalPart = `Being checked every `;
+    
+    if (minutes) {
+        let s = minutes > 1 ? 's' : '';
+        intervalPart += `${minutes} minute${s}`;
+
+        if (seconds) {
+            intervalPart += ' and ';
+        }
+    }
+    
+    if (seconds) {
+        let s = seconds > 1 ? 's' : '';
+        intervalPart += `${seconds} second${s}`;
+    }
+
+    return <>{intervalPart} by <strong>{checkMethod.toUpperCase()}</strong> method</>;
+}
+
 export {
     parseInterval,
     getCookie,
     calculateOverallUptime,
     sleep,
     isObject,
-    hasProp
+    hasProp,
+    getCheckDescription,
 };
