@@ -1,17 +1,26 @@
 import axios from "@api/axios.jsx";
+import { hasProp } from "@helpers/utils";
 
-async function sendData(funcName, type, path, data) {
+async function sendData(type, path, data, funcName) {
+    if (!funcName) {
+        funcName = `sendData (${type}, ${path})`;
+    }
+
     console.log(`${funcName} start`);
     let response = null;
 
-    if (type === 'get') {
-        response = await axios.get(path).catch(error => console.log(error));
-    } else if (type === 'post') {
-        response = await axios.post(path, data).catch(error => console.log(error));
-    } else {
+    let requests = {
+        'get': axios.get,
+        'post': axios.post,
+        'put': axios.put
+    };
+
+    if (!hasProp(requests, type)) {
         console.log(`${funcName} wrong type`);
         return null;
     }
+
+    response = await requests[type](path, data).catch(error => console.log(error));
 
     if (response?.status !== 200) {
         console.log(`${funcName} error`);
@@ -30,19 +39,27 @@ async function postData(funcName, path, data) {
     return await sendData(funcName, 'post', path, data);
 }
 
-const createService = async (service) => await postData('createService', '/services', service);
+async function putData(funcName, path, data) {
+    return await sendData(funcName, 'put', path, data);
+}
 
-const createUser = async (user) => await postData('createUser', '/register', user);
+const createService = async (service) => await postData('/services', service);
+
+const createUser = async (user) => await postData('/register', user);
 
 const getService = async (serviceId) => await getData('getService', `/services/${serviceId}`);
 
 const getServices = async () => await getData('getServices', '/services');
 
-const getIncidents = async (serviceId) => await getData('getIncidents', `/incidents?service-id=${serviceId}`);
+const getIncidents = async (serviceId) => await getData(`/incidents?service-id=${serviceId}`);
 
-const getUptime = async (serviceId) => await getData('getUptime', `/services/${serviceId}/uptime?days=60`);
+const getResponseTime = async (serviceId) => await getData(`/services/${serviceId}/response-time?days=60`);
 
-const getResponseTime = async (serviceId) => await getData('getResponseTime', `/services/${serviceId}/response-time?days=60`);
+const getService = async (serviceId) => await getData(`/services/${serviceId}`);
+
+const getServices = async () => await getData('/services');
+
+const getUptime = async (serviceId) => await getData(`/services/${serviceId}/uptime?days=60`);
 
 export {
     createUser,
