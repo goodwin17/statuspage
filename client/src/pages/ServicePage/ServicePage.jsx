@@ -33,22 +33,20 @@ export default function ServicePage() {
                 <Suspense fallback={<Skeleton height={10} />}>
                     <Await resolve={loaderData.uptimeData}>
                         {(uptimeData) => (
-                            <>
-                                <Typography
-                                    fontSize={'1.2rem'}
-                                    marginBottom={1}
-                                >
-                                    {'Average: '}
-                                    {uptimeData[0] ? (
+                            uptimeData[0] ? (
+                                <>
+                                    <Typography
+                                        fontSize={'1.2rem'}
+                                        marginBottom={1}
+                                    >
+                                        {'Average: '}
                                         <span style={{color: '#00d200', fontWeight: 500}}>
                                             {uptimeData[0].value}
                                         </span>
-                                    ) : (
-                                        <span>Not enough data</span>
-                                    )}
-                                </Typography>
-                                <UptimeChart uptimeData={uptimeData} />
-                            </>
+                                    </Typography>
+                                    <UptimeChart uptimeData={uptimeData} />
+                                </>
+                            ) : <span>Not enough data</span>
                         )}
                     </Await>
                 </Suspense>
@@ -75,7 +73,13 @@ export default function ServicePage() {
                 <Suspense fallback={<Skeleton />}>
                     <Await resolve={loaderData.incidents}>
                         {(incidents) => (
-                            <IncidentList incidents={incidents} />
+                            incidents[0] ? (
+                                <IncidentList incidents={incidents} />
+                            ) : (
+                                <Typography fontSize={'1.2rem'}>
+                                    Not enough data
+                                </Typography>
+                            )
                         )}
                     </Await>
                 </Suspense>
