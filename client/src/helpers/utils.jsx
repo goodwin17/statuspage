@@ -3,7 +3,7 @@ const parseInterval = (interval) => {
     let seconds = null;
     
     if (interval >= 60) {
-        minutes =  ~~(interval / 60);
+        minutes =  Math.floor(interval / 60);
     }
 
     if (interval % 60 !== 0) {
@@ -62,7 +62,7 @@ function hasProp(obj, prop) {
 }
 
 function getCheckDescription(checkInterval, checkMethod) {
-    const [seconds, minutes] = parseInterval(checkInterval);
+    const [minutes, seconds] = parseInterval(checkInterval);
     let intervalPart = `Being checked every `;
     
     if (minutes) {
