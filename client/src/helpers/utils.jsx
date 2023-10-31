@@ -53,8 +53,12 @@ async function sleep(ms) {
     return await new Promise(r => setTimeout(r, ms));
 }
 
-async function isObject(value) {
+function isObject(value) {
     return (typeof value === 'object' && !Array.isArray(value) && value !== null);
+}
+
+function hasProp(obj, prop) {
+    return Object.prototype.hasOwnProperty.call(obj, prop);
 }
 
 export {
@@ -62,5 +66,6 @@ export {
     getCookie,
     calculateOverallUptime,
     sleep,
-    isObject
+    isObject,
+    hasProp
 };
