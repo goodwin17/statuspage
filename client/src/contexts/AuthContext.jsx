@@ -5,7 +5,7 @@ const AuthContext = createContext(null);
 
 function AuthProvider({ children }) {
     let [isAuth, setIsAuth] = useState(JSON.parse(localStorage.getItem('isAuth')) ?? false);
-    let [user, setUser] = useState(JSON.parse(localStorage.getItem('user')));
+    let [user, setUser] = useState(JSON.parse(localStorage.getItem('user') ?? null));
 
     async function login(credentials) {
         console.log("logging in...");
