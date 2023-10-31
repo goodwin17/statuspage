@@ -1,26 +1,25 @@
-import axios from "@api/axios.jsx";
+import axios from "@api/axios";
 import { hasProp } from "@helpers/utils";
 
-async function sendData(type, path, data, funcName) {
+let requests = {
+    'get': axios.get,
+    'post': axios.post,
+    'put': axios.put
+};
+
+async function sendData(method, path, data, funcName) {
     if (!funcName) {
-        funcName = `sendData (${type}, ${path})`;
+        funcName = `sendData (${method}, ${path})`;
     }
 
     console.log(`${funcName} start`);
-    let response = null;
 
-    let requests = {
-        'get': axios.get,
-        'post': axios.post,
-        'put': axios.put
-    };
-
-    if (!hasProp(requests, type)) {
-        console.log(`${funcName} wrong type`);
+    if (!hasProp(requests, method)) {
+        console.log(`${funcName} invalid method`);
         return null;
     }
 
-    response = await requests[type](path, data).catch(error => console.log(error));
+    let response = await requests[method](path, data).catch(error => console.log(error));
 
     if (response?.status !== 200) {
         console.log(`${funcName} error`);
@@ -31,16 +30,16 @@ async function sendData(type, path, data, funcName) {
     return response.data;
 }
 
-async function getData(funcName, path) {
-    return await sendData(funcName, 'get', path);
+async function getData(path, funcName) {
+    return await sendData('get', path, null, funcName);
 }
 
-async function postData(funcName, path, data) {
-    return await sendData(funcName, 'post', path, data);
+async function postData(path, data, funcName) {
+    return await sendData('post', path, data, funcName);
 }
 
-async function putData(funcName, path, data) {
-    return await sendData(funcName, 'put', path, data);
+async function putData(path, data, funcName) {
+    return await sendData('put', path, data, funcName);
 }
 
 const createService = async (service) => await postData('/services', service);
