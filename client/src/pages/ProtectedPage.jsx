@@ -1,18 +1,13 @@
 import useAuth from "@hooks/useAuth";
-import { useEffect } from "react";
-import { Outlet, useNavigate } from "react-router-dom";
+import { Navigate, Outlet, useLocation } from "react-router-dom";
 
-export default function Protected() {
+export default function ProtectedPage() {
     let { isAuth, user } = useAuth();
-    let navigate = useNavigate();
+    let location = useLocation();
 
-    useEffect(() => {
         if (!isAuth || !user) {
-            navigate("/");
+            return <Navigate to="/" state= {{from: location.pathname}} />;
         }
-    });
 
-    return (
-        <Outlet />
-    );
+    return <Outlet />;
 }
