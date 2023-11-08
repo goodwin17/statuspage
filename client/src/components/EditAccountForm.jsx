@@ -52,7 +52,6 @@ export default function EditAccountForm() {
                 name="login"
                 label="Login"
                 value={user.login}
-                autoFocus
                 required
             />
             <TextField
