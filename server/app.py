@@ -201,6 +201,20 @@ def api_logout():
     return response
 
 
+@jwt_required()
+@app.route("/api/check-auth", methods=["GET"])
+def api_logout():
+    user = db.session.query(User).filter_by(login=get_jwt_identity()).one_or_none()
+
+    if user is None:
+        return jsonify({ "msg": "no such user" }), 401
+    
+    deserialized_user = deserialize(user)
+    del deserialized_user['password_hash']
+    response = jsonify(deserialized_user)
+    return response
+
+
 @app.route("/api/register", methods=["POST"])
 def api_register():
     data = request.get_json()

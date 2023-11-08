@@ -1,12 +1,9 @@
-import { createContext, useState } from "react";
+import { createContext } from "react";
 import axios from "@api/axios.jsx";
 
 const AuthContext = createContext(null);
 
 function AuthProvider({ children }) {
-    let [isAuth, setIsAuth] = useState(JSON.parse(localStorage.getItem('isAuth')) ?? false);
-    let [user, setUser] = useState(JSON.parse(localStorage.getItem('user') ?? null));
-
     async function login(credentials) {
         console.log("logging in...");
         let response = await axios.post("/login", credentials, {
@@ -17,11 +14,6 @@ function AuthProvider({ children }) {
             console.log("something went wrong");
             return false;
         }
-
-        localStorage.setItem('isAuth', JSON.stringify(true));
-        localStorage.setItem('user', JSON.stringify(response.data));
-        setIsAuth(true);
-        setUser(response.data);
         console.log("user logged in");
         setTimeout(() => window.location.reload(), 100);
         return true;
@@ -30,16 +22,25 @@ function AuthProvider({ children }) {
     function logout() {
         console.log("logging out...");
         axios.post("/logout").catch(error => console.log(error));
-        localStorage.removeItem('isAuth');
-        localStorage.removeItem('user');
-        setUser(null);
-        setIsAuth(false);
         console.log("user logged out");
         setTimeout(() => window.location.reload(), 100);
     }
+
+    async function checkAuth() {
+        console.log("checking auth...");
+        let response = await axios.post("/check-auth").catch(error => console.log(error));
+        
+        if (response?.status !== 200) {
+            console.log("something went wrong");
+            return [false, null];
+        }
+
+        console.log("auth ok");
+        return [true, response.data];
+    }
     
     return (
-        <AuthContext.Provider value={{ isAuth, user, login, logout}}>
+        <AuthContext.Provider value={{ checkAuth, login, logout}}>
             {children}
         </AuthContext.Provider>
     );
