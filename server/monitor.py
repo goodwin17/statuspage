@@ -109,18 +109,20 @@ class Monitor:
         self.last_statuses[service_id] = result["status"]
 
 
-    def register_incident(self, service_id, last_check_status, current_check_status, current_time):
-        title = None
+    def register_incident(self, service_id, check_result, current_time):
+        incident_title = None
         incident_type = None
+        last_status = self.last_statuses[service_id]
 
-        if last_check_status is None or last_check_status != CheckStatus.OK:
-            incident_type = IncidentType.UP
-            title = "Monitoring started"
-        elif last_check_status == CheckStatus.OK:
+        if last_status is None:
+            incident_title = "Monitoring started"
+            incident_type = IncidentType.START
+        elif last_status == CheckStatus.OK:
+            incident_title = "Down now"
             incident_type = IncidentType.DOWN
-            title = "Down right now"
-        
-        incident_type = IncidentType.get(type)
+        else:
+            incident_title = "Up now"
+            incident_type = IncidentType.UP
 
         if incident_type is None:
             return None
@@ -128,12 +130,10 @@ class Monitor:
         incident = Incident(
             service_id=service_id,
             type=incident_type,
-            title=title,
+            title=incident_title,
             datetime=current_time
         )
         
         with app.app_context():
             db.session.add(incident)
             db.session.commit()
-        
-        self.last_statuses[service_id] = current_check_status
