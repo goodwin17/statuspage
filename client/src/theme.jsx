@@ -12,6 +12,12 @@ const theme = createTheme({
     },
     components: {
         MuiTypography: {
+            styleOverrides: {
+                root: {
+                    fontSize: '1.1rem',
+                    fontWeight: 400
+                }
+            },
             variants: [{
                 props: { variant: 'h1' },
                 style: {
