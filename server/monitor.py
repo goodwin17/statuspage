@@ -89,12 +89,15 @@ class Monitor:
             method_func = check_service_http
         else:
             method_func = check_service_icmp
-        
+
         result = method_func(service.address)
+        result_status = CheckStatus.get(result['status'])
         check = Check(
             service_id=service.id,
+            method=CheckMethod.HTTP,
             datetime=current_time,
-            result=json.dumps(result)
+            status=result_status,
+            response_time=result['responseTime']
         )
 
         with app.app_context():
@@ -104,7 +107,7 @@ class Monitor:
         last_status = self.last_statuses[service_id]
 
         if last_status is None or last_status != result["status"]:
-            self.register_incident(service_id, last_status, result["status"], current_time)
+            self.register_incident(service_id, result, current_time)
         
         self.last_statuses[service_id] = result["status"]
 
