@@ -58,9 +58,17 @@ class CheckMethod(ExtendedEnum):
     ICMP = "icmp"
 
 
+class CheckStatus(ExtendedEnum):
+    OK = "ok"
+    ERROR = "error"
+    TIMEOUT = "timeout"
+
+
 class IncidentType(ExtendedEnum):
     UP = "up"
     DOWN = "down"
+    START = "start"
+    STOP = "stop"
 
 
 class User(ExtendedModel):
@@ -95,10 +103,11 @@ class Incident(ExtendedModel):
     type = db.Column(db.Enum(IncidentType), nullable=False)
     title = db.Column(db.String, nullable=False)
     datetime = db.Column(db.DateTime, nullable=False)
-    details = db.Column(db.String) # JSON with reason and code
+    details = db.Column(db.String, default='') # JSON with reason and code
 
 
 class DailyUptime(ExtendedModel):
     service_id = db.Column(db.Integer, db.ForeignKey("service.id"))
     date = db.Column(db.Date, nullable=False)
+    # datetime = db.Column(db.DateTime, nullable=False)
     uptime = db.Column(db.Float, nullable=False)
