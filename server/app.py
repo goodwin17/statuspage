@@ -111,13 +111,18 @@ def api_services_id_uptime(id):
     if days is None:
         return jsonify({ "msg": "no 'days' url parameter" })
     
-    period = (datetime.today() - timedelta(days=int(days))).date()
+    period = date.today() - timedelta(days=int(days))
+    today_period = datetime.combine(date.today(), time.min)
     daily_uptime = None
 
     try:
         daily_uptime = db.session.query(DailyUptime)\
             .filter(DailyUptime.service_id == id)\
             .filter(DailyUptime.date > period).all()
+        today_uptime = db.session.query(Check)\
+            .filter(Check.service_id == id)\
+            .filter(Check.datetime > today_period)
+        daily_uptime.append(today_uptime)
     except:
         return jsonify({ "msg": "can not get uptime data"})
     
