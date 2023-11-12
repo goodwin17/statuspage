@@ -1,4 +1,4 @@
-import FormBox from "@mui/material/FormBox";
+import FormBox from "@components/FormBox";
 import FormTextField from "@components/FormTextField";
 import useAuth from "@hooks/useAuth";
 
