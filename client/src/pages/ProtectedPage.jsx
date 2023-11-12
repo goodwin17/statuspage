@@ -5,9 +5,13 @@ export default function ProtectedPage() {
     let { isAuth, user } = useAuth();
     let location = useLocation();
 
-        if (!isAuth || !user) {
-            return <Navigate to="/" state= {{from: location.pathname}} />;
-        }
+    if (isAuth === null) {
+        return <>Loading...</>;
+    }
+
+    if (!isAuth || !user) {
+        return <Navigate to="/" state= {{from: location.pathname}} />;
+    }
 
     return <Outlet />;
 }
