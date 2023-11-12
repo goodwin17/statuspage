@@ -210,10 +210,11 @@ def api_logout():
     return response
 
 
-@jwt_required()
 @app.route("/api/check-auth", methods=["GET"])
-def api_logout():
-    user = db.session.query(User).filter_by(login=get_jwt_identity()).one_or_none()
+@jwt_required()
+def api_check_auth():
+    identity = get_jwt_identity()
+    user = db.session.query(User).filter_by(login=identity).one_or_none()
 
     if user is None:
         return jsonify({ "msg": "no such user" }), 401
