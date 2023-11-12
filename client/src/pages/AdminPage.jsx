@@ -9,6 +9,7 @@ import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import Button from "@components/Button";
 import Modal from "@components/Modal";
+import Divider from '@mui/material/Divider';
 import AddServiceForm from "@components/AddServiceForm";
 import AddAdminForm from "@components/AddAdminForm";
 import useAuth from "@hooks/useAuth";
@@ -43,7 +44,7 @@ export default function AdminPage() {
     }
 
     return (
-        <>ADMIN PAGE
+        <>
             <Modal
                 open={isAddServiceModalOpen}
                 onClose={closeAddServiceModal}
@@ -62,7 +63,7 @@ export default function AdminPage() {
                     {services => (
                         <>
                             {services.length > 0 ? (
-                                <Stack>
+                                <Stack gap={2}>
                                     {services.map(service => (
                                         <Box key={service.id}>
                                             <Typography>
@@ -72,14 +73,23 @@ export default function AdminPage() {
                                                 {' • '}
                                                 {service.address}
                                             </Typography>
-                                            <Typography>
+                                            <Typography marginTop={0.25}>
                                                 {getCheckDescription(service.checkInterval, service.checkMethod)}
                                             </Typography>
+                                            <Divider sx={{marginTop: 1}} />
                                         </Box>
                                     ))}
                                 </Stack>
                             ) : <Typography>No services</Typography>}
-                            <Button onClick={openAddServiceModal} variant='contained'>Add service</Button>
+                            <Button
+                                onClick={openAddServiceModal}
+                                variant='contained'
+                                sx={{
+                                    marginTop: 2
+                                }}
+                            >
+                                Add service
+                            </Button>
                         </>
                     )}
                 </Loaded>
