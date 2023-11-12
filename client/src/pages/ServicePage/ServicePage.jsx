@@ -46,7 +46,11 @@ export default function ServicePage() {
                                     </Typography>
                                     <UptimeChart uptimeData={uptimeData} />
                                 </>
-                            ) : <span>Not enough data</span>
+                            ) : (
+                                <Typography fontSize={'1.2rem'}>
+                                    Not enough data
+                                </Typography>
+                            )
                         )}
                     </Await>
                 </Suspense>
