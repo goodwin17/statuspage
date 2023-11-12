@@ -1,15 +1,13 @@
 from __main__ import app
 from flask_apscheduler import APScheduler
-from models import db, Service, Check, Incident, IncidentType, CheckMethod
+from models import db, Service, Check, Incident, IncidentType, CheckMethod, CheckStatus
 from utils import check_service_http, check_service_icmp
 from datetime import datetime
-import json
-from enum import Enum
 
-class CheckStatus(Enum):
-    OK = "ok"
-    ERROR = "error"
-    TIMEOUT = "timeout"
+check_methods = {
+    CheckMethod.HTTP: check_service_http,
+    CheckMethod.ICMP: check_service_icmp
+}
 
 
 class Monitor:
@@ -19,9 +17,12 @@ class Monitor:
 
     
     def run(self):
+        if len(self.last_statuses) > 0:
+            self.scheduler.resume()
+            return None
+
         for service in self.services():
             self.add(service)
-            self.last_statuses[service.id] = None
         
         self.scheduler.start()
 
@@ -31,6 +32,7 @@ class Monitor:
 
 
     def add(self, service):
+        self.last_statuses[service.id] = None
         self.scheduler.add_job(
             id=str(service.id),
             func=self.check_service,
@@ -38,7 +40,6 @@ class Monitor:
             trigger="interval",
             seconds=service.check_interval
         )
-        self.last_statuses[service.id] = None
     
 
     def start(self, service_id):
