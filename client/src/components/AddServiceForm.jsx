@@ -1,14 +1,15 @@
-import { Box, Typography, TextField, Slider } from "@mui/material";
-import Button from "@components/Button";
+import { Box, Typography, Slider, styled } from "@mui/material";
 import { createService } from "@api/requests";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 import ToggleButton from "@mui/material/ToggleButton";
 import { useState } from "react";
+import FormBox from "@mui/material/FormBox";
+import FormTextField from "@components/FormTextField";
 
 export default function AddServiceForm() {
     const [checkMethod, setCheckMethod] = useState('HTTP');
     const [checkInterval, setCheckInterval] = useState(5);
-    const handleCheckMethodChange = (event, newValue) => setCheckMethod(newValue);
+    const handleCheckMethodChange = (event, newValue) => (newValue !== null) && setCheckMethod(newValue);
     const handleCheckIntervalChange = (event, newValue) => setCheckInterval(newValue);
 
     async function handleSubmit(event) {
@@ -16,7 +17,7 @@ export default function AddServiceForm() {
         const formData = new FormData(event.currentTarget);
         const service = {
             name: formData.get('name'),
-            address: formData.get('login'),
+            address: formData.get('address'),
             checkMethod: checkMethod,
             checkInterval: checkInterval
         };
@@ -25,73 +26,46 @@ export default function AddServiceForm() {
         console.log(success);
     }
 
+    const CheckMethodToggleButton = styled(ToggleButton)({
+        paddingLeft: 1.75,
+        paddingRight: 1.75,
+        paddingTop: 1,
+        paddingBottom: 1
+    });
+
     return (
-        <Box
-            component="form"
-            onSubmit={handleSubmit}
-            sx={{
-                width: '360px',
-                display: 'flex',
-                flexDirection: 'column',
-                gap: 3,
-                padding: 1,
-                margin: '0 auto',
-                '& > *': {color: '#ff0000'}
-            }}
-        >
-            <Typography
-                variant="h2"
-                align="center"
+        <FormBox title="Add service" onSubmit={handleSubmit}>
+            <FormTextField spec="name" autoFocus required />
+            <FormTextField spec="address" required />
+            <Box
+                display={'flex'}
+                flexDirection={'row'}
+                alignItems={'center'}
+                gap={2}
             >
-                Add Service
-            </Typography>
-            <TextField
-                id="name"
-                name="name"
-                label="Name"
-                autoFocus
-                required
-            />
-            <TextField
-                id="address"
-                name="address"
-                label="Address"
-                required
-            />
-            <Box>
-                <Typography>
-                    Check Method
-                </Typography>
+                <Typography>Check method</Typography>
                 <ToggleButtonGroup
-                    value={checkMethod}
-                    exclusive
+                    value={checkMethod} exclusive
                     onChange={handleCheckMethodChange}
-                    >
-                    <ToggleButton value="HTTP">HTTP</ToggleButton>
-                    <ToggleButton value="ICMP">ICMP</ToggleButton>
+                >
+                    <CheckMethodToggleButton value="HTTP">
+                        HTTP
+                    </CheckMethodToggleButton>
+                    <CheckMethodToggleButton value="ICMP">
+                        ICMP
+                    </CheckMethodToggleButton>
                 </ToggleButtonGroup>
             </Box>
             <Box>
-                <Typography>
-                    Check Interval
-                </Typography>
+                <Typography>Check interval (in minutes)</Typography>
                 <Slider
-                    min={1}
-                    max={30}
-                    step={1}
-                    marks
+                    min={1} max={30}
+                    step={1} marks
                     defaultValue={checkInterval}
                     valueLabelDisplay="auto"
                     onChange={handleCheckIntervalChange}
                 />
             </Box>
-            <Button
-                type="submit"
-                variant="contained"
-                sx={{padding: 1}}
-            >
-                Submit
-            </Button>
-        </Box>
+        </FormBox>
     );
 }
