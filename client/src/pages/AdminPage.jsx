@@ -1,48 +1,113 @@
-// import useAuth from "@hooks/useAuth";
+import DataSection from "@components/DataSection";
+import Link from "@components/Link";
+import Loaded from "@components/Loaded";
 import PageTitle from "@components/PageTitle";
 import Box from "@mui/material/Box";
-import DataSection from "@components/DataSection";
-import { Typography, Stack } from "@mui/material";
+import Stack from "@mui/material/Stack";
+import Typography from "@mui/material/Typography";
+import List from "@mui/material/List";
+import ListItem from "@mui/material/ListItem";
+import Button from "@components/Button";
+import Modal from "@components/Modal";
+import AddServiceForm from "@components/AddServiceForm";
+import AddAdminForm from "@components/AddAdminForm";
+import useAuth from "@hooks/useAuth";
 import { useState, useEffect } from "react";
-import { getServices } from "@api/requests";
-import Loaded from "@components/Loaded";
-import Link from "@components/Link";
+import { getServices, getAdmins } from "@api/requests";
 import { getCheckDescription } from "@helpers/utils";
 
 export default function AdminPage() {
-    let [services, setServices] = useState(null);
+    const { user } = useAuth();
+    const [services, setServices] = useState(null);
+    const [admins, setAdmins] = useState(null);
+    const [isAddServiceModalOpen, setIsAddServiceModalOpen] = useState(false);
+    const [isAddAdminModalOpen, setIsAddAdminModalOpen] = useState(false);
+    const openAddServiceModal = () => setIsAddServiceModalOpen(true);
+    const closeAddServiceModal = () => setIsAddServiceModalOpen(false);
+    const openAddAdminModal = () => setIsAddAdminModalOpen(true);
+    const closeAddAdminModal = () => setIsAddAdminModalOpen(false);
 
     useEffect(() => {
         async function loadData() {
             let services = await getServices();
             setServices(services);
+            let admins = await getAdmins();
+            setAdmins(admins);
         }
 
         loadData();
     }, []);
 
+    if (user === null) {
+        return <>Loading...</>;
+    }
+
     return (
-        <>
-            <PageTitle title='Admin Page' />
+        <>ADMIN PAGE
+            <Modal
+                open={isAddServiceModalOpen}
+                onClose={closeAddServiceModal}
+            >
+                <AddServiceForm />
+            </Modal>
+            <Modal
+                open={isAddAdminModalOpen}
+                onClose={closeAddAdminModal}
+            >
+                <AddAdminForm />
+            </Modal>
+            <PageTitle title='Admin Panel' />
             <DataSection title='Services'>
                 <Loaded resolve={services}>
                     {services => (
-                        <Stack>
-                            {services.map(service => (
-                                <Box key={service.id}>
-                                    <Typography>
-                                        <Link href={`/services/${service.id}`}>
-                                            {service.name}
-                                        </Link>
-                                        {' • '}
-                                        {service.address}
-                                    </Typography>
-                                    <Typography>
-                                        {getCheckDescription(service.checkInterval, service.checkMethod)}
-                                    </Typography>
-                                </Box>
-                            ))}
-                        </Stack>
+                        <>
+                            {services.length > 0 ? (
+                                <Stack>
+                                    {services.map(service => (
+                                        <Box key={service.id}>
+                                            <Typography>
+                                                <Link href={`/services/${service.id}`}>
+                                                    {service.name}
+                                                </Link>
+                                                {' • '}
+                                                {service.address}
+                                            </Typography>
+                                            <Typography>
+                                                {getCheckDescription(service.checkInterval, service.checkMethod)}
+                                            </Typography>
+                                        </Box>
+                                    ))}
+                                </Stack>
+                            ) : <Typography>No services</Typography>}
+                            <Button onClick={openAddServiceModal} variant='contained'>Add service</Button>
+                        </>
+                    )}
+                </Loaded>
+            </DataSection>
+            <DataSection title='Admins'>
+                <Loaded resolve={admins}>
+                    {admins => (
+                        <>
+                            <List>
+                                {admins.map(admin => (
+                                    <ListItem
+                                        key={admin.id}
+                                        sx={{
+                                            display: 'flex',
+                                            flexDirection: 'row',
+                                            justifyContent: 'flex-start',
+                                            gap: '1rem'
+                                        }}
+                                    >
+                                        <Typography>{admin.name}</Typography>
+                                        <Typography>{admin.login}</Typography>
+                                        <Typography>{admin.role}</Typography>
+                                        {(user.id === admin.id) && <Typography>(You)</Typography>}
+                                    </ListItem>
+                                ))}
+                            </List>
+                            <Button onClick={openAddAdminModal} variant='contained'>Add admin</Button>
+                        </>
                     )}
                 </Loaded>
             </DataSection>
