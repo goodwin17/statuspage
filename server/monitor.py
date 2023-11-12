@@ -55,8 +55,14 @@ class Monitor:
 
     
     def update(self, service): # method, interval
-        self.remove(service.id)
-        self.add(service)
+        self.scheduler.remove_job(str(service.id))
+        self.scheduler.add_job(
+            id=str(service.id),
+            func=self.check_service,
+            args=[service.id],
+            trigger="interval",
+            seconds=service.check_interval
+        )
 
 
     def service(self, id):
