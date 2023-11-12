@@ -8,7 +8,7 @@ export default function Loaded({
     skeletonVariant = 'text',
     loader = null
 }) {
-    if (!isObject(resolve)) {
+    if (!isObject(resolve) && !Array.isArray(resolve)) {
         return "Invalid 'resolve' parameter";
     }
 
