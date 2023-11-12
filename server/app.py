@@ -282,6 +282,11 @@ if __name__ == "__main__":
             db.session.add(superadmin)
             db.session.commit()
 
+    from time import sleep
     service_monitor.run()
-    atexit.register(lambda: service_monitor.shutdown(wait=False))
+    sleep(0.2)
+    daily_uptime_scheduler.start()
+    sleep(0.2)
+    atexit.register(lambda: service_monitor.shutdown(wait=True))
+    sleep(0.2)
     app.run(debug=True, use_reloader=False)
