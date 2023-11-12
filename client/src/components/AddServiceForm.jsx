@@ -3,7 +3,7 @@ import { createService } from "@api/requests";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 import ToggleButton from "@mui/material/ToggleButton";
 import { useState } from "react";
-import FormBox from "@mui/material/FormBox";
+import FormBox from "@components/FormBox";
 import FormTextField from "@components/FormTextField";
 
 export default function AddServiceForm() {
@@ -19,11 +19,12 @@ export default function AddServiceForm() {
             name: formData.get('name'),
             address: formData.get('address'),
             checkMethod: checkMethod,
-            checkInterval: checkInterval
+            checkInterval: checkInterval * 60
         };
         console.log(service);
         const success = await createService(service);
         console.log(success);
+        window.location.reload();
     }
 
     const CheckMethodToggleButton = styled(ToggleButton)({
