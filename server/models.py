@@ -83,11 +83,11 @@ class Service(ExtendedModel):
 
 class Check(ExtendedModel):
     service_id = db.Column(db.Integer, db.ForeignKey("service.id"))
-    datetime = db.Column(db.String, nullable=False)
-    result = db.Column(db.String) # JSON with status, code and response time
-
-    def get_result(self):
-        return json.loads(self.result)
+    method = db.Column(db.Enum(CheckMethod), nullable=False)
+    datetime = db.Column(db.DateTime, nullable=False)
+    status = db.Column(db.Enum(CheckStatus), nullable=False)
+    code = db.Column(db.Integer, default=None)
+    response_time = db.Column(db.String)
 
 
 class Incident(ExtendedModel):
