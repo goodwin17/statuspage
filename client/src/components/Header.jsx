@@ -6,8 +6,12 @@ import useAuth from "@hooks/useAuth";
 import useModal from "@hooks/useModal";
 
 export default function Header() {
-    let { isAuth, logout } = useAuth();
+    const { isAuth, logout } = useAuth();
     const { openModal } = useModal();
+
+    if (isAuth === null) {
+        return <>Loading...</>;
+    }
 
     return (
         <AppBar position="static">
