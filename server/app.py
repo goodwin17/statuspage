@@ -182,6 +182,12 @@ def api_incidents_service_id():
     return jsonify(to_json(deserialize(incidents)))
 
 
+@app.route("/api/users", methods=["GET"]) # role parameter is necessary
+def api_users():
+    admins = db.session.query(User).filter(User.role == UserRole.ADMIN or User.role == UserRole.SUPERADMIN).all()
+    return jsonify(to_json(deserialize(admins)))
+
+
 @app.route("/api/login", methods=["POST"])
 def api_login():
     data = request.get_json()
