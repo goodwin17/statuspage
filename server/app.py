@@ -5,7 +5,7 @@ from flask_jwt_extended import JWTManager, create_access_token, unset_jwt_cookie
 from werkzeug.security import generate_password_hash, check_password_hash
 from utils import deserialize, from_json, to_json, get_response_time
 from flask_cors import CORS
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date, time
 import atexit
 
 app = Flask(__name__)
@@ -18,7 +18,6 @@ from models import db, User, Service, Incident, UserRole, CheckMethod, DailyUpti
 from daily_uptime_scheduler import daily_uptime_scheduler
 
 service_monitor = Monitor()
-daily_uptime_scheduler.start()
 
 
 @app.route("/")
@@ -45,7 +44,8 @@ def api_services():
     
     verify_jwt_in_request()
     data = request.get_json()
-    check_method = CheckMethod.get(data["checkMethod"])
+    check_method = CheckMethod.get(data["checkMethod"].lower())
+    service = None
 
     if check_method is None:
         return jsonify({ "msg": "no such check method"}), 400
@@ -91,13 +91,17 @@ def api_services_id(id):
         
         return jsonify({ "msg": "service updated" })
     
-    try:
-        service_query_filter.delete()
-        db.session.commit()
-    except Exception as e:
-        return jsonify({ "msg": "can not delete service", "error": str(e) }), 500
+    if request.method == "DELETE":
+        try:
+            service_query_filter.delete()
+            db.session.commit()
+            service_monitor.remove(service_query_filter.first()['id'])
+        except Exception as e:
+            return jsonify({ "msg": "can not delete service", "error": str(e) }), 500
     
-    return jsonify({ "msg": "service deleted" })
+        return jsonify({ "msg": "service deleted" })
+
+    return jsonify({ "msg": "bad request" }), 400
 
 
 @app.route("/api/services/<id>/uptime", methods=["GET"]) # days parameter is necessary
