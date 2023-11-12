@@ -1,7 +1,6 @@
 from __main__ import app
 from flask_sqlalchemy import SQLAlchemy
 from enum import Enum
-import json
 
 db = SQLAlchemy(app)
 
@@ -9,6 +8,10 @@ db = SQLAlchemy(app)
 class ExtendedModel(db.Model):
     __abstract__ = True
     id = db.Column(db.Integer, primary_key=True, unique=True, autoincrement=True)
+
+    @classmethod
+    def get(cls, id):
+        return db.query(cls).filter_by(id=id)
 
     @classmethod
     def create(cls, **columns):
