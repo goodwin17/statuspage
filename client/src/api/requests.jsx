@@ -7,9 +7,9 @@ let requests = {
     'put': axios.put
 };
 
-async function sendData(method, path, data, funcName) {
+async function sendApiRequest(method, path, data, funcName) {
     if (!funcName) {
-        funcName = `sendData (${method}, ${path})`;
+        funcName = `sendApiRequest (${method}, ${path})`;
     }
 
     console.log(`${funcName} start`);
@@ -31,15 +31,15 @@ async function sendData(method, path, data, funcName) {
 }
 
 async function getData(path, funcName) {
-    return await sendData('get', path, null, funcName);
+    return await sendApiRequest('get', path, null, funcName);
 }
 
 async function postData(path, data, funcName) {
-    return await sendData('post', path, data, funcName);
+    return await sendApiRequest('post', path, data, funcName);
 }
 
 async function putData(path, data, funcName) {
-    return await sendData('put', path, data, funcName);
+    return await sendApiRequest('put', path, data, funcName);
 }
 
 const createService = async (service) => await postData('/services', service);
