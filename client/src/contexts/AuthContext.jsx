@@ -28,7 +28,7 @@ function AuthProvider({ children }) {
 
     async function checkAuth() {
         console.log("checking auth...");
-        let response = await axios.post("/check-auth").catch(error => console.log(error));
+        let response = await axios.get("/check-auth").catch(error => console.log(error));
         
         if (response?.status !== 200) {
             console.log("something went wrong");
