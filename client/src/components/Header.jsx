@@ -4,10 +4,22 @@ import Toolbar from "@mui/material/Toolbar";
 import Button from "@components/Button";
 import useAuth from "@hooks/useAuth";
 import useModal from "@hooks/useModal";
+import { useNavigate } from "react-router-dom";
 
 export default function Header() {
     const { isAuth, logout } = useAuth();
     const { openModal } = useModal();
+    const navigate = useNavigate();
+
+    const handleLogout = () => {
+        logout();
+        navigate("/", {
+            state: {
+                from: location.pathname,
+                didLogout: true
+            }
+        });
+    }
 
     if (isAuth === null) {
         return <>Loading...</>;
@@ -45,7 +57,7 @@ export default function Header() {
                                 Admin Panel
                             </Button>
                             <Button
-                                onClick={logout}
+                                onClick={handleLogout}
                                 sx={{
                                     color: "white",
                                     fontSize: "1rem"
