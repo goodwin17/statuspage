@@ -48,6 +48,8 @@ const createUser = async (user) => await postData('/register', user);
 
 const editUser = async (userLogin, data) => await putData(`/users/${userLogin}`, data);
 
+const editService = async (serviceId, data) => await putData(`/services/${serviceId}`, data);
+
 const getAdmins = async () => await getData('/users?role=admin');
 
 const getIncidents = async (serviceId) => await getData(`/incidents?service-id=${serviceId}`);
@@ -64,6 +66,7 @@ export {
     createUser,
     createService,
     editUser,
+    editService,
     getAdmins,
     getService,
     getServices,

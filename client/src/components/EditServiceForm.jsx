@@ -1,5 +1,5 @@
 import { Box, Typography, Slider, styled } from "@mui/material";
-import { createService } from "@api/requests";
+import { editService } from "@api/requests";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 import ToggleButton from "@mui/material/ToggleButton";
 import { useState } from "react";
@@ -22,7 +22,7 @@ export default function EditServiceForm({ service }) {
             checkInterval: checkInterval * 60
         };
         console.log(service);
-        const success = await createService(service);
+        const success = await editService(service);
         console.log(success);
         window.location.reload();
     }
