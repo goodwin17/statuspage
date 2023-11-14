@@ -16,17 +16,30 @@ import useAuth from "@hooks/useAuth";
 import { useState, useEffect } from "react";
 import { getServices, getAdmins } from "@api/requests";
 import { getCheckDescription } from "@helpers/utils";
+import EditServiceForm from "@components/EditServiceForm";
 
 export default function AdminPage() {
     const { user } = useAuth();
     const [services, setServices] = useState(null);
     const [admins, setAdmins] = useState(null);
+    const [currentEditService, setCurrentEditService] = useState(null);
+
     const [isAddServiceModalOpen, setIsAddServiceModalOpen] = useState(false);
-    const [isAddAdminModalOpen, setIsAddAdminModalOpen] = useState(false);
     const openAddServiceModal = () => setIsAddServiceModalOpen(true);
     const closeAddServiceModal = () => setIsAddServiceModalOpen(false);
+
+    const [isAddAdminModalOpen, setIsAddAdminModalOpen] = useState(false);
     const openAddAdminModal = () => setIsAddAdminModalOpen(true);
     const closeAddAdminModal = () => setIsAddAdminModalOpen(false);
+
+    const [isEditServiceModalOpen, setIsEditServiceModalOpen] = useState(false);
+    const openEditServiceModal = () => setIsEditServiceModalOpen(true);
+    const closeEditServiceModal = () => setIsEditServiceModalOpen(true);
+
+    const handleEditService = (service) => {
+        setCurrentEditService(service);
+        openEditServiceModal();
+    }
 
     useEffect(() => {
         async function loadData() {
@@ -52,6 +65,12 @@ export default function AdminPage() {
                 <AddServiceForm />
             </Modal>
             <Modal
+                open={isEditServiceModalOpen}
+                onClose={closeEditServiceModal}
+            >
+                <EditServiceForm service={currentEditService} />
+            </Modal>
+            <Modal
                 open={isAddAdminModalOpen}
                 onClose={closeAddAdminModal}
             >
@@ -62,31 +81,36 @@ export default function AdminPage() {
                 <Loaded resolve={services}>
                     {services => (
                         <>
-                            {services.length > 0 ? (
+                            {(services.length > 0) ? (
                                 <Stack gap={2}>
                                     {services.map(service => (
-                                        <Box key={service.id}>
-                                            <Typography>
-                                                <Link href={`/services/${service.id}`}>
-                                                    {service.name}
-                                                </Link>
-                                                {' • '}
-                                                {service.address}
-                                            </Typography>
-                                            <Typography marginTop={0.25}>
-                                                {getCheckDescription(service.checkInterval, service.checkMethod)}
-                                            </Typography>
+                                        <>
+                                            <Box key={service.id}>
+                                                <Box>
+                                                    <Typography>
+                                                        <Link href={`/services/${service.id}`}>
+                                                            {service.name}
+                                                        </Link>
+                                                        {' • '}
+                                                        {service.address}
+                                                    </Typography>
+                                                    <Typography marginTop={0.25}>
+                                                        {getCheckDescription(service.checkInterval, service.checkMethod)}
+                                                    </Typography>
+                                                </Box>
+                                                <Button onClick={() => handleEditService(service)}>
+                                                    Edit
+                                                </Button>
+                                            </Box>
                                             <Divider sx={{marginTop: 1}} />
-                                        </Box>
+                                        </>
                                     ))}
                                 </Stack>
                             ) : <Typography>No services</Typography>}
                             <Button
                                 onClick={openAddServiceModal}
                                 variant='contained'
-                                sx={{
-                                    marginTop: 2
-                                }}
+                                sx={{marginTop: 2}}
                             >
                                 Add service
                             </Button>
@@ -102,6 +126,7 @@ export default function AdminPage() {
                                 {admins.map(admin => (
                                     <ListItem
                                         key={admin.id}
+                                        disableGutters
                                         sx={{
                                             display: 'flex',
                                             flexDirection: 'row',
