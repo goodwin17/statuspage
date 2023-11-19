@@ -15,6 +15,8 @@ class ExtendedModel(db.Model):
 
     @classmethod
     def create(cls, **columns):
+        obj = None
+        
         try:
             obj = cls(columns)
             db.session.add(obj)
