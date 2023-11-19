@@ -15,7 +15,7 @@ CORS(app)
 
 from monitor import Monitor
 from models import db, User, Service, Incident, UserRole, CheckMethod, DailyUptime, Check
-from daily_uptime_scheduler import daily_uptime_scheduler
+from daily_uptime_scheduler import daily_uptime_scheduler, get_average_uptime
 
 service_monitor = Monitor()
 
@@ -119,15 +119,15 @@ def api_services_id_uptime(id):
         daily_uptime = db.session.query(DailyUptime)\
             .filter(DailyUptime.service_id == id)\
             .filter(DailyUptime.date > period).all()
-        today_uptime = db.session.query(Check)\
+        daily_checks_query = db.session.query(Check)\
             .filter(Check.service_id == id)\
             .filter(Check.datetime > today_period)
+        today_uptime = get_average_uptime(daily_checks_query)
         daily_uptime.append(today_uptime)
     except:
         return jsonify({ "msg": "can not get uptime data"})
     
     response_data = [{"date": day.date, "value": day.value} for day in daily_uptime]
-
     return jsonify(response_data)
 
 

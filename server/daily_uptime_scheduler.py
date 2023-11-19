@@ -5,7 +5,40 @@ from datetime import timedelta, date
 daily_uptime_scheduler = APScheduler()
 
 
+def get_average_uptime(checks_query):
+    from __main__ import app
+
+    with app.app_context():
+        total_count = checks_query.count()
+
+        if total_count == 0:
+            return None
+        
+        ok_count = checks_query.filter(Check.status == CheckStatus.OK).count()
+        return (ok_count / total_count) * 100
+
+
 def get_daily_uptimes():
+    uptimes = {}
+    yesterday = date.now() - timedelta(hours=24)
+    from __main__ import app
+
+    with app.app_context():
+        services = db.session.query(Service).all()
+        
+        if services is None or len(services) == 0:
+            return None
+        
+        for service in services:
+            daily_checks_query = db.session.query(Check)\
+                .filter(Check.datetime > yesterday)\
+                .filter_by(service_id=service.id)
+            uptimes[service.id] = get_average_uptime(daily_checks_query)
+        
+    return uptimes
+
+
+def get_daily_uptimes_old():
     print('inside of get_daily_uptimes')
     yesterday = date.now() - timedelta(hours=24)
     uptimes = {}
