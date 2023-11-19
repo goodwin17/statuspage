@@ -34,7 +34,7 @@ export default function AdminPage() {
 
     const [isEditServiceModalOpen, setIsEditServiceModalOpen] = useState(false);
     const openEditServiceModal = () => setIsEditServiceModalOpen(true);
-    const closeEditServiceModal = () => setIsEditServiceModalOpen(true);
+    const closeEditServiceModal = () => setIsEditServiceModalOpen(false);
 
     const handleEditService = (service) => {
         setCurrentEditService(service);
@@ -85,7 +85,13 @@ export default function AdminPage() {
                                 <Stack gap={2}>
                                     {services.map(service => (
                                         <>
-                                            <Box key={service.id}>
+                                            <Box key={service.id} sx={{
+                                                display: 'flex',
+                                                flexDirection: 'row',
+                                                justifyContent: 'flex-start',
+                                                alignItems: 'center',
+                                                gap: '1rem'
+                                            }}>
                                                 <Box>
                                                     <Typography>
                                                         <Link href={`/services/${service.id}`}>
@@ -98,7 +104,10 @@ export default function AdminPage() {
                                                         {getCheckDescription(service.checkInterval, service.checkMethod)}
                                                     </Typography>
                                                 </Box>
-                                                <Button onClick={() => handleEditService(service)}>
+                                                <Button
+                                                    variant='contained'
+                                                    onClick={() => handleEditService(service)}
+                                                >
                                                     Edit
                                                 </Button>
                                             </Box>
